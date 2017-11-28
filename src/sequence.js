@@ -142,12 +142,12 @@ const wait = (time = 100) => new Promise(resolve => {
 	setTimeout(resolve, time);
 });
 
-// num マス前に歩く
-export const walk = num => {
-	queue.push(async player => {
-		await player.walk(num);
-	});
-};
+// // num マス前に歩く
+// export const walk = num => {
+// 	queue.push(async player => {
+// 		await player.walk(num);
+// 	});
+// };
 
 // 右に回転
 export const turnRight = () => {
@@ -275,25 +275,28 @@ export function dashRight(step) {
 */
 
 // num 回攻撃する
-export const attack = num => {
+export const attack = () => {
 	queue.push(async player => {
-		await player.attack(num);
+		await player.attack();
 	});
 };
 
 // 絶対座標で移動する
 export const locate = (x, y) => {
 	queue.push(async player => {
+		await wait(); // 進んだことが見えるように
 		player.locate(x, y);
-		await wait();
+		// 階段の先へ
+		player.dispatchEvent(new Event('walkend'));
+		await wait(); // 進んだことが見えるように
 	});
 };
 
 // num 回だけシーケンスを最初からリピートする
 // ただし一度過ぎ去ったあとは２重ループの実現ためにカウントをリセット
-// repeat(0) ... リピートしない。つねにスルー
-// repeat(1) ... １回目はリピート, ２回目はスルー, ３回目はリピート...
-// repeat(2) ... リピート, リピート, スルー, リピート, リピート, スルー...
+// repeat(1) ... リピートしない。つねにスルー
+// repeat(2) ... １回目はリピート, ２回目はスルー, ３回目はリピート...
+// repeat(3) ... リピート, リピート, スルー, リピート, リピート, スルー...
 // repeat(n) ... n + 1 の倍数回はスルー, それ以外はリピート
 export const repeat = num => {
 	--num;

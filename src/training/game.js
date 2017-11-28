@@ -10,7 +10,7 @@ async function gameFunc() {
 	resetMap();
 
 	const player = self.player = new Player(); // プレイヤーをつくる
-	player.locate(2, 1); // はじめの位置
+	player.locate(1, 4); // はじめの位置
 	player.on(('▼ イベント', 'こうげきするとき'), (event) => {
 		const 使い手 = event.target;
 		const ビーム = new RPGObject();
@@ -31,8 +31,8 @@ async function gameFunc() {
 	// 詠唱待ち時間設定
 	window.WAIT_TIME = 3000;
 
-	// ゲーム時間設定
-	window.TIME_LIMIT = 180 * 1000;
+	// ゲーム時間設定（練習用ステージは時間なし）
+	window.TIME_LIMIT = 0;
 
 	// せつめい
 	const description = new enchant.Sprite(388, 224);
@@ -47,38 +47,10 @@ async function gameFunc() {
 	startButton.ontouchstart = () => {
 		Hack.menuGroup.removeChild(description);
 		Hack.menuGroup.removeChild(startButton);
-		// タイマー開始
-		Hack.startTimer();
 	};
 
-	Hack.on('gameclear', function () {
-		// 一旦削除
-		const score = Hack.score;
-		Hack.scoreLabel.score = 0;
-		Hack.menuGroup.removeChild(Hack.scoreLabel);
-		setTimeout(() => {
-			// スコアラベル表示
-			Hack.scoreLabel.moveBy(0, 210);
-			Hack.overlayGroup.addChild(Hack.scoreLabel);
-			Hack.scoreLabel.score = score;
-		}, 1000);
-
-		// 次へボタン
-		const nextButton = new enchant.Sprite(120, 32);
-		nextButton.image = game.assets['resources/next_button'];
-		nextButton.moveTo(180, 260);
-		nextButton.ontouchstart = () => {
-			// stage 2 へ
-			feeles.replace('stages/2/index.html');
-		};
-
-		setTimeout(() => {		
-			Hack.overlayGroup.addChild(nextButton);		
-		}, 4000);
-	});
-
 	// 魔道書のコードをひらく
-	feeles.openCode('stages/1/code.js');
+	feeles.openCode('training/code.js');
 
 	for (const key of Object.keys(sequence)) {
 		if (key !== 'resetQueue') {
@@ -94,60 +66,62 @@ function resetMap() {
 
 	const map1 = Hack.createMap(`
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|10|00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|10|10|10|10|10|10|10|10|10|10|10|10|00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 10|00 10|
-		10|00 10|10|10|10|10|10|10|10|10|00 10|00 10|
-		10|00 10|00 00 00 00 00 00 00 10|00 10|00 10|
-		10|00 10|00 00 00 00 00 00 00 00 00 10|00 10|
-		10|00 10|10|10|10|10|10|10|10|10|10|10|00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
+		10|00 00 00 00 00 00 00 00 00 10|00 10|00 10|
+		10|00 00 00 00 00 00 00 00 00 10|00 10|00 10|
+		10|00 00 00 00 00 00 00 00 00 10|00 10|00 10|
+		10|00 00 00 00 00 00 00 00 00 10|00 10|00 10|
+		10|00 00 00 00 00 00 00 00 00 10|00 10|00 10|
+		10|00 00 00 00 00 00 00 00 00 10|00 10|00 10|
+		10|00 00 00 00 00 00 00 00 00 10|00 10|00 10|
+		10|00 00 00 00 00 00 00 00 00 10|00 10|00 10|
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
 	`);
 	Hack.maps.map1 = map1;
 
 	Hack.changeMap('map1'); // map1 をロード
-	
-	const itemStairs2 = new RPGObject();
-	itemStairs2.mod(('▼ スキン', _kくだりかいだん));
-	itemStairs2.locate(9, 5, 'map1');
-	itemStairs2.layer = RPGMap.Layer.Under;
-	itemStairs2.on(('▼ イベント', 'のった'), async () => {
-		// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
-		Hack.player.stop();
-		await new Promise((resolve) => setTimeout(resolve, 100));
-		Hack.player.resume();
+
+	const stair1 = new RPGObject();
+	stair1.mod(('▼ スキン', _kくだりかいだん));
+	stair1.locate(13, 8, 'map1');
+	stair1.layer = RPGMap.Layer.Under;
+	stair1.on(('▼ イベント', 'のった'), async () => {
 		resetMap();
 		Hack.floorLabel.score++;
-		player.locate(2, 1); // はじめの位置
+		player.locate(1, 4); // はじめの位置
 	});
 
 
-	// コインを置きまくる
-	for (var i=3; i<=13; i++) {
-		putCoin(i, 1);
+	// コインと宝箱
+	for (var i=2; i<=8; i++) {
+		putCoin(i, 4);
 	}
-	for (var j=2; j<=8; j++) {
-		putCoin(13, j);
+	const box = new RPGObject();
+	box.mod(('▼ スキン', _tたからばこ));
+	box.locate(9, 4, 'map1');
+	box.onこうげきされた = () => {
+		delete box.onこうげきされた;
+		box.mod(('▼ スキン', _tたからばこひらいた));
+		Hack.score += 10;
+	};
+
+	// 壁の奥のコイン
+	for (var y = 1; y <= 7; y++) {
+		putCoin(13, y);
 	}
-	for (var i=1; i<=12; i++) {
-		putCoin(i, 8);
-	}
-	for (var j=3; j<=7; j++) {
-		putCoin(1, j);
-	}
-	for (var i=2; i<=11; i++) {
-		putCoin(i, 3);
-	}
-	for (var j=4; j<=6; j++) {
-		putCoin(11, j);
-	}
-	for (var i=3; i<=10; i++) {
-		putCoin(i, 6);
-	}
-	for (var i=3; i<=8; i++) {
-		putCoin(i, 5);
-	}
+
+	// とくに意味のないつぼ
+	[
+		[9, 7], [11, 7],
+		[8, 8], [9, 8], [11, 8]
+	].forEach(([x, y]) => {
+		const pot = new RPGObject();
+		pot.mod(('▼ スキン', _tつぼ));
+		pot.locate(x, y, 'map1');
+		pot.onこうげきされた = () => {
+			pot.destroy();
+		};
+	});
+	
 	/*+ モンスター アイテム せっち システム */
 
 }
@@ -165,7 +139,7 @@ function putCoin(x, y) {
 
 Hack.onreset = function() {
 	resetMap();
-	player.locate(2, 1); // はじめの位置
+	player.locate(1, 4); // はじめの位置
 	player.forward = [1, 0];
 };
 
