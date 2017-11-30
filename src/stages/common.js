@@ -4,6 +4,8 @@
 import Hack from 'hackforplay/hack';
 import { Event } from 'enchantjs/enchant';
 import { resetQueue } from 'sequence';
+import 'mod/coordinate';
+
 
 const common = () => {
 	// // 呪文詠唱を止めるボタン [一旦廃止]
@@ -43,9 +45,6 @@ const common = () => {
 	Hack.floorLabel.label = 'FLOOR:';
 	Hack.menuGroup.addChild(Hack.floorLabel);
 
-	// ライフラベルを隠す
-	Hack.lifeLabel.parentNode.removeChild(Hack.lifeLabel);
-
 	// 詠唱アニメーション
 	let chantEffect = null;
 	Hack.on('code', () => {
@@ -78,6 +77,24 @@ const common = () => {
 		// scorechange のタイミングでシーンに追加する場合は enterframe を呼ばないと label が反映されない
 		scoreEffect.dispatchEvent(new Event('enterframe'));
 		Hack.world.addChild(scoreEffect);
+	});
+
+	// 魔道書に構文エラーがあったとき
+	Hack.on('error', ({ error }) => {
+		// エラーダイアログ（画像）を表示
+		const dialog = new enchant.Sprite(336, 240);
+		dialog.image = game.assets['resources/error_message'];
+		dialog.opacity = 0;
+		dialog.moveTo(72, 40);
+		dialog.ontouchstart = () => {
+			// クリックでとじる
+			// dialog.tl.fadeOut(30).removeFromScene();
+			Hack.menuGroup.removeChild(dialog);
+		};
+		Hack.menuGroup.addChild(dialog);
+		dialog.tl.fadeIn(30);
+		// 細かい内容はコンソールに出力する
+		console.error(error);
 	});
 
 };
