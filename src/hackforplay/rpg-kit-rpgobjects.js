@@ -513,7 +513,7 @@ Hack.assets.chantEffect = function() {
 	this.height = 240;
 	this.offset = {
 		x: -105,
-		y: -108
+		y: -114
 	};
 	this.directionType = 'single';
 	this.forward = [0, -1];

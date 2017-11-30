@@ -49,20 +49,24 @@ const common = () => {
 	let chantEffect = null;
 	Hack.on('code', () => {
 		if (chantEffect) chantEffect.remove();
-		chantEffect = new RPGObject();
-		chantEffect.mod(Hack.assets.chantEffect);
-		chantEffect.locate(player.mapX, player.mapY);
+		// chantEffect に当たり判定があるとビームが自分に当たってしまうので Sprite にする
+		chantEffect = new enchant.Sprite(240, 240);
+		Hack.assets.chantEffect.call(chantEffect);
+		chantEffect.moveTo(window.player.x, window.player.y);
+		chantEffect.moveBy(-window.player.offset.x, -window.player.offset.y);
+		chantEffect.moveBy(chantEffect.offset.x, chantEffect.offset.y);
 		chantEffect.compositeOperation = 'lighter';
 		chantEffect.scale(0);
+		Hack.defaultParentNode.addChild(chantEffect);
 		chantEffect.tl.scaleTo(1, 1, 8, 'QUAD_EASEOUT');
 		// 詠唱中は操作できない
-		player.stop();
-		chantEffect.setTimeout(() => {
+		window.player.stop();
+		setTimeout(() => {
 			// 元に戻す
-			player.resume();
+			window.player.resume();
 			// エフェクトを消す
 			chantEffect.tl.fadeOut(4).removeFromScene();
-		}, window.WAIT_TIME / 1000 * game.fps);
+		}, window.WAIT_TIME);
 	});
 
 	Hack.on('realtimescorechange', ({ oldValue, newValue }) => {
