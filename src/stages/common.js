@@ -1,10 +1,11 @@
-/* global enchant, game */
+/* global enchant, game, feeles */
 // 全てのステージに共通する処理
 
 import Hack from 'hackforplay/hack';
 import { Event } from 'enchantjs/enchant';
-import { resetQueue } from 'sequence';
+import { kill } from 'feeles/eval';
 import 'mod/coordinate';
+import snippets from 'snippets';
 
 
 const common = () => {
@@ -24,14 +25,14 @@ const common = () => {
 	resetButton.ontouchstart = () => {
 		Hack.dispatchEvent(new Event('reset'));
 		// リセットはストップをかねる
-		resetQueue();
+		kill();
 	};
 	Hack.menuGroup.addChild(resetButton);
 
 	// タイムオーバー
 	Hack.on('gameclear', () => {
 		// 時間切れ！
-		window.STOP_FLAG = true;
+		kill();
 	});
 
 	// スコアの表示位置変更
@@ -126,5 +127,19 @@ Hack.startTimer = () => {
 		limitTimer.text = limitTimer.label + Math.ceil(time);
 	});
 };
+
+// feeles.setAlias をつぶす
+// => feeles.exports に書き出すのをやめる
+// => 'message.complete' イベントを発火させない
+feeles.setAlias = function() {};
+
+// 必要なエイリアスを書き出す
+feeles.connected.then(({ port }) => {
+	port.postMessage({
+		// id: getUniqueId(),
+		query: 'complete',
+		value: snippets
+	});
+});
 
 export default common;
