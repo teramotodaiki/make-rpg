@@ -69,8 +69,8 @@ async function gameFunc() {
 		nextButton.image = game.assets['resources/next_button'];
 		nextButton.moveTo(180, 260);
 		nextButton.ontouchstart = () => {
-			// stage 2.5 へ
-			feeles.replace('practices/2.5/index.html');
+			// stage 3 へ
+			feeles.replace('practices/3/index.html');
 		};
 
 		setTimeout(() => {		
@@ -88,7 +88,7 @@ function resetMap() {
 	Hack.maps.map1 = map1;
 
 	Hack.changeMap('map1'); // map1 をロード
-	for (let x=13; x<=13; x+=2) {
+	for (let x=11; x<=13; x+=2) {
 		for (let y=2; y<100; y+=2) {
 			putTresureBox(x, y);
 		}
