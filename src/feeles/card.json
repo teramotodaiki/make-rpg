@@ -28,7 +28,7 @@
         }
     },
     "ReadmeCard": {
-        "visible": false,
+        "visible": true,
         "order": 5,
         "init": {
             "fileName": "README.md"
