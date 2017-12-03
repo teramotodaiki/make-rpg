@@ -1,4 +1,5 @@
 homeURL: https://www.feeles.com
 kitIdentifier: com.feeles.make-rpg
+formatOnSendCode: true
 disableReloadButton: true
 disableFullScreenButton: true
