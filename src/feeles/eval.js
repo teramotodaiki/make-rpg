@@ -25,8 +25,10 @@ export default function (code) {
 	clearInterval(timerId);
 	timerId = feeles.setTimeout(() => {
 
-		// RUN!
-		run(code);
+		if (Hack.isPlaying) {
+			// RUN!
+			run(code);
+		}
 
 	}, window.WAIT_TIME);	
 }
