@@ -79,7 +79,7 @@ async function gameFunc() {
 	});
 
 	// 魔道書のコードをひらく
-	feeles.openCode('practices/2/code.js');
+	feeles.openCode('practices/2.5/code.js');
 
 }
 

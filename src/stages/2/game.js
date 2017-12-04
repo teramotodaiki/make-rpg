@@ -50,7 +50,13 @@ async function gameFunc() {
 		Hack.menuGroup.removeChild(startButton);
 		// タイマー開始
 		Hack.startTimer();
+
+		// 魔道書のコードをひらく
+		feeles.openCode('stages/2/code.js');
 	};
+
+	feeles.closeCode();
+	feeles.closeReadme();
 
 	Hack.on('gameclear', function () {
 		// 一旦削除
@@ -77,9 +83,6 @@ async function gameFunc() {
 			Hack.overlayGroup.addChild(nextButton);		
 		}, 4000);
 	});
-
-	// 魔道書のコードをひらく
-	feeles.openCode('stages/2/code.js');
 
 }
 

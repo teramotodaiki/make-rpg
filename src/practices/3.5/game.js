@@ -54,7 +54,7 @@ async function gameFunc() {
 	};
 
 	// 魔道書のコードをひらく
-	feeles.openCode('practices/3/code.js');
+	feeles.openCode('practices/3.5/code.js');
 
 	Hack.on('gameclear', function () {
 		// 一旦削除
