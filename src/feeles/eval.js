@@ -90,9 +90,10 @@ ${workerJs}
 				console.info('現在登録されているメソッド:', methods);
 				throw new Error(`メソッド ${name} は登録されていません. feeles.setAlias(name, func); してください`);
 			}
-			method(...args).then(() => {
+			method(...args).then(returnValue => {
 				event.target.postMessage({
-					id
+					id,
+					returnValue
 				});
 			});
 		});
