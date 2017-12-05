@@ -23,7 +23,7 @@ const sleep = player => new Promise(resolve => {
 });
 
 // second 秒 await する
-export async function wait(second = 0.1) {
+export async function wait(second = 1) {
 	return new Promise(resolve => {
 		feeles.setTimeout(resolve, second * 1000);
 	});
