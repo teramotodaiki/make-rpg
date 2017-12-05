@@ -118,31 +118,31 @@ function timerFunc() {
 		case 10:
 			moguraOn(3,3);
 			break;
-		case 20:	
+		case 30:	
 			moguraOff();
 			break;
-		case 30:
+		case 40:
 			moguraOn(5,3);
-			break;
-		case 40:	
-			moguraOff();
-			break;
-		case 50:
-			moguraOn(7,3);
 			break;
 		case 60:	
 			moguraOff();
 			break;
 		case 70:
-			moguraOn(9,3);
+			moguraOn(7,3);
 			break;
-		case 80:	
+		case 90:	
 			moguraOff();
 			break;
-		case 90:
+		case 100:
+			moguraOn(9,3);
+			break;
+		case 120:	
+			moguraOff();
+			break;
+		case 130:
 			moguraOn(11,3);
 			break;
-		case 100:	
+		case 150:	
 			moguraOff();
 			timerCount = 0;
 			break;
