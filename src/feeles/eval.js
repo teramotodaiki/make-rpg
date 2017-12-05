@@ -1,6 +1,6 @@
+/* global feeles */
 import enchant from '../enchantjs/enchant';
 import Hack from '../hackforplay/hack';
-import * as sequence from '../sequence';
 import workerJs from 'raw-loader!worker';
 
 // コードを受け取ってから実行を開始するまでの待機時間
@@ -8,6 +8,17 @@ window.WAIT_TIME = 3000;
 
 // setTimeout の戻り値を保持する
 let timerId;
+
+// ワーカー側で使える関数の名前リスト
+const methods = {};
+
+// feeles.setAlias を上書き
+// methods に追加することで、ワーカーで使えるようにする
+// => feeles.exports に書き出すのをやめる
+// => 'message.complete' イベントを発火させない
+feeles.setAlias = function(name, ref) {
+	methods[name] = ref;
+};
 
 export default function (code) {
 	// 魔道書の実行をフック
@@ -37,17 +48,23 @@ export default function (code) {
 // null でないとき: thread が running
 let worker = null;
 
-// ['attack', 'dash', ...]
-const asyncMethodKeywords = Object.keys(sequence);
-// 特定の関数がコールされているとき、そこに await キーワードを付け足す
-// /(attack|dash|...)\(/g
-const regExp = new RegExp(`(${asyncMethodKeywords.join('|')})\\(`,  'g');
-
 function run(code) {
+	// ['attack', 'dash', ...]
+	const asyncMethodKeywords = Object.keys(methods);
+	// 特定の関数がコールされているとき、そこに await キーワードを付け足す
+	// /(attack|dash|...)\(/g
+	const regExp = new RegExp(`(${asyncMethodKeywords.join('|')})\\(`,  'g');
+
 	try {
+		// 全体を async function で囲み,
+		// const methodNames の変数宣言を差し込み,
 		// workerJs とがっちゃんこして,
-		// 全体を async function で囲み, await を補完
-		code = `${workerJs}
+		// 最後に await キーワードを補完
+		code = `
+const methodNames = [
+	${asyncMethodKeywords.map(name => `'${name}'`).join(',')}
+];
+${workerJs}
 (async function () {
 	${code.replace(regExp, 'await $1(')}
 })()`;
@@ -68,7 +85,12 @@ function run(code) {
 		worker.addEventListener('message', event => {
 			const { id, name, args } = event.data;
 			// Worker 側から指定されたメソッドをコール
-			sequence[name](...args).then(() => {
+			const method = methods[name];
+			if (!method) {
+				console.info('現在登録されているメソッド:', methods);
+				throw new Error(`メソッド ${name} は登録されていません. feeles.setAlias(name, func); してください`);
+			}
+			method(...args).then(() => {
 				event.target.postMessage({
 					id
 				});

@@ -2,6 +2,7 @@
 
 import enchant from 'enchantjs/enchant';
 import 'hackforplay/rpg-kit-main';
+import 'feeles/eval';
 
 // 1 フレームで走れる最大距離
 const DASH_STEP_LIMIT = 3;
@@ -23,6 +24,7 @@ const sleep = player => new Promise(resolve => {
 });
 
 // second 秒 await する
+feeles.setAlias('wait', wait);
 export async function wait(second = 1) {
 	return new Promise(resolve => {
 		feeles.setTimeout(resolve, second * 1000);
@@ -31,6 +33,7 @@ export async function wait(second = 1) {
 
 // 右に回転
 
+feeles.setAlias('turnRight', turnRight);
 export async function turnRight () {
 	const player = await _player;
 	player.turn(-1);
@@ -38,6 +41,7 @@ export async function turnRight () {
 }
 
 // 左に回転
+feeles.setAlias('turnLeft', turnLeft);
 export async function turnLeft () {
 	const player = await _player;
 	player.turn(1);
@@ -47,6 +51,7 @@ export async function turnLeft () {
 // num マス分高速に移動 (最大100)
 // 指定がない場合は壁にぶつかるまで高速で移動
 // 例外として、マップが変わったときは停止する
+feeles.setAlias('dash', dash);
 export async function dash (num = 100) {
 	const player = await _player;
 
@@ -70,6 +75,7 @@ export async function dash (num = 100) {
 }
 
 // 上を向く
+feeles.setAlias('headUp', headUp);
 export async function headUp () {
 	const player = await _player;
 	
@@ -78,6 +84,7 @@ export async function headUp () {
 }
 
 // 右を向く
+feeles.setAlias('headRight', headRight);
 export async function headRight () {
 	const player = await _player;
 
@@ -86,6 +93,7 @@ export async function headRight () {
 }
 
 // 下を向く
+feeles.setAlias('headDown', headDown);
 export async function headDown () {
 	const player = await _player;
 
@@ -94,6 +102,7 @@ export async function headDown () {
 }
 
 // 左を向く
+feeles.setAlias('headLeft', headLeft);
 export async function headLeft () {
 	const player = await _player;
 
@@ -102,6 +111,7 @@ export async function headLeft () {
 }
 
 // num 回攻撃する
+feeles.setAlias('attack', attack);
 export async function attack () {
 	const player = await _player;
 
@@ -110,6 +120,7 @@ export async function attack () {
 
 // 絶対座標で移動する
 // x, y は小数点以下で切り捨てられる
+feeles.setAlias('locate',locate );
 export async function locate (x, y) {
 	const player = await _player;
 

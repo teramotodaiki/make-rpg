@@ -114,11 +114,6 @@ Hack.startTimer = () => {
 	Hack.menuGroup.addChild(limitTimer);
 };
 
-// feeles.setAlias をつぶす
-// => feeles.exports に書き出すのをやめる
-// => 'message.complete' イベントを発火させない
-feeles.setAlias = function() {};
-
 // 必要なエイリアスを書き出す
 feeles.connected.then(({ port }) => {
 	port.postMessage({

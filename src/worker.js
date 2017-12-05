@@ -1,15 +1,4 @@
-const methodNames = [
-	'wait',
-	'turnRight',
-	'turnLeft',
-	'dash',
-	'headUp',
-	'headRight',
-	'headDown',
-	'headLeft',
-	'attack',
-	'locate',
-];
+/* global methodNames */
 
 // { [id]: resolve() }
 const resolveStore = {};
