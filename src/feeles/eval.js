@@ -41,7 +41,7 @@ let worker = null;
 const asyncMethodKeywords = Object.keys(sequence);
 // 特定の関数がコールされているとき、そこに await キーワードを付け足す
 // /(attack|dash|...)\(/g
-const regExp = new RegExp(`($${asyncMethodKeywords.join('|')})\\(`,  'g');
+const regExp = new RegExp(`(${asyncMethodKeywords.join('|')})\\(`,  'g');
 
 function run(code) {
 	try {
