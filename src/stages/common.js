@@ -8,6 +8,8 @@ import 'mod/coordinate';
 import snippets from 'snippets';
 
 
+window.STRATEGY_TIME = 0 * 1000; // 説明画面でとまる秒数. 実際には１分とか.
+
 const common = () => {
 	// ゲームリセットボタン
 	const resetButton = new enchant.Sprite(64, 64);

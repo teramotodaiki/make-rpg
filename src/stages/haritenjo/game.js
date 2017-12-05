@@ -45,19 +45,41 @@ async function gameFunc() {
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
-	const startButton = new enchant.Sprite(120, 32);
-	startButton.image = game.assets['resources/start_button'];
-	startButton.moveTo(180, 220);
-	Hack.menuGroup.addChild(startButton);
-	startButton.ontouchstart = () => {
-		Hack.menuGroup.removeChild(description);
-		Hack.menuGroup.removeChild(startButton);
-		// タイマー開始
-		Hack.startTimer();
+	// const startButton = new enchant.Sprite(120, 32);
+	// startButton.image = game.assets['resources/start_button'];
+	// startButton.moveTo(180, 220);
+	// Hack.menuGroup.addChild(startButton);
+	// startButton.ontouchstart = () => {
+	// 	Hack.menuGroup.removeChild(description);
+	// 	Hack.menuGroup.removeChild(startButton);
+	// 	// タイマー開始
+	// 	Hack.startTimer();
 
-		// 魔道書のコードをひらく
-		feeles.openCode('stages/haritenjo/code.js');
-	};
+	// 	// 魔道書のコードをひらく
+	// 	feeles.openCode('stages/haritenjo/code.js');
+	// };
+
+	// 説明画面（作戦タイム）のタイマー => ゲームスタート
+	const strategyTimer = new enchant.ui.MutableText(352, 8);
+	const limit = Date.now() + window.STRATEGY_TIME;
+	strategyTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	strategyTimer.on('enterframe', () => {
+		const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
+		strategyTimer.text = 'TIME:' + last;
+		if (last <= 0) {
+			Hack.menuGroup.removeChild(description);
+			// Hack.menuGroup.removeChild(startButton);
+			// タイマー開始
+			Hack.startTimer();
+		
+			// 魔道書のコードをひらく
+			feeles.openCode('stages/haritenjo/code.js');
+			
+			// 削除
+			Hack.menuGroup.removeChild(strategyTimer);
+		}
+	});
+	Hack.menuGroup.addChild(strategyTimer);
 
 	feeles.closeCode();
 	feeles.closeReadme();
@@ -90,7 +112,7 @@ async function gameFunc() {
 
 	feeles.setInterval(timerFunc, 100);
 	// feeles.setInterval(setTraps, 4000);
-	feeles.setAlias("getSafeTime", getSafeTime);
+	feeles.setAlias('getSafeTime', getSafeTime);
 
 }
 
@@ -122,7 +144,7 @@ function resetMap() {
 		Hack.player.resume();
 		resetMap();
 		Hack.floorLabel.score++;
-	player.locate(startPlayerX, startPlayerY); // はじめの位置
+		player.locate(startPlayerX, startPlayerY); // はじめの位置
 	});
 
 	// コインを置きまくる
@@ -142,12 +164,12 @@ function timerFunc() {
 	timerCount++;
 	if (timerCount == 40) {
 		setTraps();
-		Hack.log("トラップ発動");
+		Hack.log('トラップ発動');
 	} else if (timerCount == 80) {
 		setTraps();
 		timerCount = 0;
 	} else if (timerCount % 10 == 0 && timerCount < 40) {
-		Hack.log("トラップ発動まであと"+(40-timerCount)*0.1+"秒");
+		Hack.log('トラップ発動まであと'+(40-timerCount)*0.1+'秒');
 	}
 }
 

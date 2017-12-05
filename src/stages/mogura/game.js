@@ -45,19 +45,41 @@ async function gameFunc() {
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
-	const startButton = new enchant.Sprite(120, 32);
-	startButton.image = game.assets['resources/start_button'];
-	startButton.moveTo(180, 220);
-	Hack.menuGroup.addChild(startButton);
-	startButton.ontouchstart = () => {
-		Hack.menuGroup.removeChild(description);
-		Hack.menuGroup.removeChild(startButton);
-		// タイマー開始
-		Hack.startTimer();
+	// const startButton = new enchant.Sprite(120, 32);
+	// startButton.image = game.assets['resources/start_button'];
+	// startButton.moveTo(180, 220);
+	// Hack.menuGroup.addChild(startButton);
+	// startButton.ontouchstart = () => {
+	// 	Hack.menuGroup.removeChild(description);
+	// 	Hack.menuGroup.removeChild(startButton);
+	// 	// タイマー開始
+	// 	Hack.startTimer();
 
-		// 魔道書のコードをひらく
-		feeles.openCode('stages/mogura/code.js');
-	};
+	// 	// 魔道書のコードをひらく
+	// 	feeles.openCode('stages/mogura/code.js');
+	// };
+
+	// 説明画面（作戦タイム）のタイマー => ゲームスタート
+	const strategyTimer = new enchant.ui.MutableText(352, 8);
+	const limit = Date.now() + window.STRATEGY_TIME;
+	strategyTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	strategyTimer.on('enterframe', () => {
+		const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
+		strategyTimer.text = 'TIME:' + last;
+		if (last <= 0) {
+			Hack.menuGroup.removeChild(description);
+			// Hack.menuGroup.removeChild(startButton);
+			// タイマー開始
+			Hack.startTimer();
+		
+			// 魔道書のコードをひらく
+			feeles.openCode('stages/mogura/code.js');
+			
+			// 削除
+			Hack.menuGroup.removeChild(strategyTimer);
+		}
+	});
+	Hack.menuGroup.addChild(strategyTimer);
 
 	feeles.closeCode();
 	feeles.closeReadme();
@@ -89,7 +111,7 @@ async function gameFunc() {
 	});
 
 	feeles.setInterval(timerFunc, 100);
-	feeles.setAlias("getSafeTime", getSafeTime);
+	feeles.setAlias('getSafeTime', getSafeTime);
 
 }
 
@@ -115,37 +137,37 @@ var timerCount = 0;
 function timerFunc() {
 	timerCount++;
 	switch(timerCount) {
-		case 10:
-			moguraOn(3,3);
-			break;
-		case 30:	
-			moguraOff();
-			break;
-		case 40:
-			moguraOn(5,3);
-			break;
-		case 60:	
-			moguraOff();
-			break;
-		case 70:
-			moguraOn(7,3);
-			break;
-		case 90:	
-			moguraOff();
-			break;
-		case 100:
-			moguraOn(9,3);
-			break;
-		case 120:	
-			moguraOff();
-			break;
-		case 130:
-			moguraOn(11,3);
-			break;
-		case 150:	
-			moguraOff();
-			timerCount = 0;
-			break;
+	case 10:
+		moguraOn(3,3);
+		break;
+	case 30:	
+		moguraOff();
+		break;
+	case 40:
+		moguraOn(5,3);
+		break;
+	case 60:	
+		moguraOff();
+		break;
+	case 70:
+		moguraOn(7,3);
+		break;
+	case 90:	
+		moguraOff();
+		break;
+	case 100:
+		moguraOn(9,3);
+		break;
+	case 120:	
+		moguraOff();
+		break;
+	case 130:
+		moguraOn(11,3);
+		break;
+	case 150:	
+		moguraOff();
+		timerCount = 0;
+		break;
 	}
 }
 
