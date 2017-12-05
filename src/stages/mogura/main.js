@@ -1,7 +1,7 @@
 import 'hackforplay/core';
 
 import gameFunc from './game';
-import common from '../../stages/common';
+import common from '../common';
 
 // ゲームをつくる
 game.onload = async() => {
@@ -13,7 +13,7 @@ game.onload = async() => {
 	Hack.maps = Hack.maps || {};
 	
 	gameFunc();
-	
+
 	// 共通処理
 	common();
 

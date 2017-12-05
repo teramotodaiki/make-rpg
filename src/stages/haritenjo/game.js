@@ -5,12 +5,17 @@ import * as sequence from 'sequence';
  * デバッグ中につき魔道書は最初から表示されています
  */
 var mCoinScore = 1;
+var coinArray = new Array();
+var trapArray = new Array();
+var trapFlag = false;
+var startPlayerX = 1;
+var startPlayerY = 2;
 
 async function gameFunc() {
 	resetMap();
 
 	const player = self.player = new Player(); // プレイヤーをつくる
-	player.locate(2, 1); // はじめの位置
+	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.on(('▼ イベント', 'こうげきするとき'), (event) => {
 		const 使い手 = event.target;
 		const ビーム = new RPGObject();
@@ -83,16 +88,16 @@ async function gameFunc() {
 		}, 4000);
 	});
 
-	feeles.setInterval(setTraps, 3000);
+	feeles.setInterval(timerFunc, 100);
+	// feeles.setInterval(setTraps, 4000);
+	feeles.setAlias("getSafeTime", getSafeTime);
 
 }
 
 function resetMap() {
-
-
 	const map1 = Hack.createMap(`
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
+		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
@@ -117,37 +122,89 @@ function resetMap() {
 		Hack.player.resume();
 		resetMap();
 		Hack.floorLabel.score++;
-		player.locate(2, 1); // はじめの位置
+	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	});
 
-
 	// コインを置きまくる
-	// for (var i=1; i<=13; i++) {
-	// 	for (var j=1; j<=8; j++) {
-	// 		putCoin(i, j);
-	// 	}
-	// }
-	// わな置きまくる。
-	/*+ モンスター アイテム せっち システム */
+	for (var i=1; i<=13; i++) {
+		for (var j=2; j<=8; j++) {
+			if ((i==1 && j==2)) {
+				continue;
+			}
+			const coin = putCoin(i, j);
+			coinArray.push(coin);
+		}
+	}
 }
 
-var trapArray = new Array();
-var trapFlag = false;
+var timerCount = 0;
+function timerFunc() {
+	timerCount++;
+	if (timerCount == 40) {
+		setTraps();
+		Hack.log("トラップ発動");
+	} else if (timerCount == 80) {
+		setTraps();
+		timerCount = 0;
+	} else if (timerCount % 10 == 0 && timerCount < 40) {
+		Hack.log("トラップ発動まであと"+(40-timerCount)*0.1+"秒");
+	}
+}
+
+function getSafeTime() {
+	if (timerCount < 40) {
+		return (40-timerCount)*0.1;
+	} else {
+		return 0;
+	}
+}
 
 function setTraps() {
+	// トラップ発動
 	if (!trapFlag) {
-		for (var i=1; i<13; i++) {
-			for (var j=1; j<8; j++) {
+		// コイン消す
+		for (var i=1; i<=13; i++) {
+			for (var j=2; j<=8; j++) {
+				if (i==1 && j==2) {
+					continue;
+				}
+				coinArray[coinArray.length-1].destroy();
+				coinArray.pop();
+			} 
+		}
+
+		// trap出す
+		for (var i=1; i<=13; i++) {
+			for (var j=2; j<=8; j++) {
+				if (i==1 && j==2) {
+					continue;
+				}
 				const trap = putTrap(i,j);
 				trapArray.push(trap);
 			}
 		}
-	} else {
-		for (var i=1; i<13; i++) {
-			for (var j=1; j<8; j++) {
+	} 
+	// トラップ解消
+	else {
+		// トラップ消す
+		for (var i=1; i<=13; i++) {
+			for (var j=2; j<=8; j++) {
+				if (i==1 && j==2) {
+					continue;
+				}
 				trapArray[trapArray.length-1].destroy();
 				trapArray.pop();
 			} 
+		}
+		// コインを置きまくる
+		for (var i=1; i<=13; i++) {
+			for (var j=2; j<=8; j++) {
+				if (i==1 && j==2) {
+					continue;
+				}
+				const coin = putCoin(i, j);
+				coinArray.push(coin);
+			}
 		}
 	}
 	trapFlag = !trapFlag;
@@ -162,6 +219,7 @@ function putTrap(x, y) {
 		item2.mod(('▼ スキン', _tつぼ));
 		player.hp -= 1;
 		player.damageTime = 30;
+
 	});
 	item2.on(('▼ イベント', 'おりた'), () => {
 		item2.mod(('▼ スキン', _tつぼ));
@@ -177,12 +235,13 @@ function putCoin(x, y) {
 		itemCoin1.destroy();
 		Hack.score += mCoinScore;
 	};
+	return itemCoin1;
 }
 
 
 Hack.onreset = function() {
 	resetMap();
-	player.locate(2, 1); // はじめの位置
+	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
 };
 
