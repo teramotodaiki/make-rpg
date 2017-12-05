@@ -2,7 +2,7 @@
 // 全てのステージに共通する処理
 
 import Hack from 'hackforplay/hack';
-import { Event } from 'enchantjs/enchant';
+import enchant, { Event } from 'enchantjs/enchant';
 import { kill } from 'feeles/eval';
 import 'mod/coordinate';
 import snippets from 'snippets';
@@ -98,25 +98,20 @@ const common = () => {
 // タイマーをスタートさせる
 Hack.startTimer = () => {
 	// 時間制限タイマー
-	const limitTimer = new enchant.ui.TimeLabel(352, 8, 'countdown');
-	limitTimer.time = (window.TIME_LIMIT / 1000) >> 0;
+	const limitTimer = new enchant.ui.MutableText(352, 8);
+	const limit = Date.now() + window.TIME_LIMIT;
 	limitTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-	Hack.menuGroup.addChild(limitTimer);
-
-	let isEnd = false;
-	// ゲーム終了
-	function end() {
-		isEnd = true;
-		// クリア（これ以降はスコアが増えない）
-		Hack.gameclear();
-	}
-	
-	limitTimer._listeners.enterframe.push(() => {
-		const time = Math.max(limitTimer._time / game.fps, 0);
-		// 時間切れ
-		if (!isEnd && time <= 0) end();
-		limitTimer.text = limitTimer.label + Math.ceil(time);
+	limitTimer.on('enterframe', () => {
+		if (Hack.isPlaying) {
+			const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
+			limitTimer.text = 'TIME:' + last;
+			if (last <= 0) {
+				// クリア（これ以降はスコアが増えない）
+				Hack.gameclear();
+			}
+		}
 	});
+	Hack.menuGroup.addChild(limitTimer);
 };
 
 // feeles.setAlias をつぶす
