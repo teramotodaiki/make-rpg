@@ -52,6 +52,13 @@ async function gameFunc() {
 	// 魔道書のコードをひらく
 	feeles.openCode('training/code.js');
 
+	// トレーニング専用の関数を定義
+	async function trainingOnly () {
+		return 'トレーニングステージ専用の関数です!!';
+	}
+	// 関数を登録する
+	feeles.setAlias('trainingOnly', trainingOnly);
+
 }
 
 function resetMap() {
