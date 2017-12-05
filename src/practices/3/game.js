@@ -51,13 +51,10 @@ async function gameFunc() {
 		Hack.menuGroup.removeChild(startButton);
 		// タイマー開始
 		Hack.startTimer();
-
-		// 魔道書のコードをひらく
-		feeles.openCode('stages/3/code.js');
 	};
 
-	feeles.closeCode();
-	feeles.closeReadme();
+	// 魔道書のコードをひらく
+	feeles.openCode('practices/3/code.js');
 
 	Hack.on('gameclear', function () {
 		// 一旦削除
@@ -70,6 +67,19 @@ async function gameFunc() {
 			Hack.overlayGroup.addChild(Hack.scoreLabel);
 			Hack.scoreLabel.score = score;
 		}, 1000);
+
+		// 次へボタン
+		const nextButton = new enchant.Sprite(120, 32);
+		nextButton.image = game.assets['resources/next_button'];
+		nextButton.moveTo(180, 260);
+		nextButton.ontouchstart = () => {
+			// stage 3.5 へ
+			feeles.replace('practices/3.5/index.html');
+		};
+
+		setTimeout(() => {		
+			Hack.overlayGroup.addChild(nextButton);		
+		}, 4000);
 	});
 
 }
@@ -108,7 +118,7 @@ function resetMap() {
 	});
 
 	// オーブを壊した後呼ぶ関数
-	let orbNum = 3;
+	let orbNum = 1;
 	const destroyOrb = () => {
 		orbNum--; // オーブを 1 へらす
 		Hack.score += mOrbScore; // 得点を増やす		
@@ -144,22 +154,6 @@ function resetMap() {
 	itemGem1.locate(4, 3, 'map1');
 	itemGem1.tl.moveBy(0, 96, 60).moveBy(0, -96, 60).loop();
 	itemGem1.on(('▼ イベント', 'たおれたとき'), destroyOrb);
-
-
-	const itemGem2 = new RPGObject();
-	itemGem2.mod(('▼ スキン', Hack.assets.orangeOrb));
-	itemGem2.hp = 1;
-	itemGem2.locate(10, 6, 'map1');
-	itemGem2.tl.moveBy(0, -96, 60).moveBy(0, 96, 60).loop();
-	itemGem2.on(('▼ イベント', 'たおれたとき'), destroyOrb);
-
-
-	const itemGem3 = new RPGObject();
-	itemGem3.mod(('▼ スキン', Hack.assets.orangeOrb));
-	itemGem3.hp = 1;
-	itemGem3.locate(8, 2, 'map1');
-	itemGem3.tl.moveBy(-64, 0, 60).moveBy(64, 0, 60).loop();
-	itemGem3.on(('▼ イベント', 'たおれたとき'), destroyOrb);
 
 	const itemBarrier = new Sprite(128, 128);
 	itemBarrier.image = game.assets['resources/barrier'];

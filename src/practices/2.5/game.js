@@ -50,13 +50,7 @@ async function gameFunc() {
 		Hack.menuGroup.removeChild(startButton);
 		// タイマー開始
 		Hack.startTimer();
-
-		// 魔道書のコードをひらく
-		feeles.openCode('stages/2/code.js');
 	};
-
-	feeles.closeCode();
-	feeles.closeReadme();
 
 	Hack.on('gameclear', function () {
 		// 一旦削除
@@ -76,13 +70,16 @@ async function gameFunc() {
 		nextButton.moveTo(180, 260);
 		nextButton.ontouchstart = () => {
 			// stage 3 へ
-			feeles.replace('stages/3/index.html');
+			feeles.replace('practices/3/index.html');
 		};
 
 		setTimeout(() => {		
 			Hack.overlayGroup.addChild(nextButton);		
 		}, 4000);
 	});
+
+	// 魔道書のコードをひらく
+	feeles.openCode('practices/2.5/code.js');
 
 }
 
@@ -91,9 +88,9 @@ function resetMap() {
 	Hack.maps.map1 = map1;
 
 	Hack.changeMap('map1'); // map1 をロード
-	for (var i=3; i<=13; i+=2) {
-		for (var j=2; j<100; j+=2) {
-			putTresureBox(i, j);
+	for (let x=11; x<=13; x+=2) {
+		for (let y=2; y<100; y+=2) {
+			putTresureBox(x, y);
 		}
 	}
 

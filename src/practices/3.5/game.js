@@ -51,13 +51,10 @@ async function gameFunc() {
 		Hack.menuGroup.removeChild(startButton);
 		// タイマー開始
 		Hack.startTimer();
-
-		// 魔道書のコードをひらく
-		feeles.openCode('stages/3/code.js');
 	};
 
-	feeles.closeCode();
-	feeles.closeReadme();
+	// 魔道書のコードをひらく
+	feeles.openCode('practices/3.5/code.js');
 
 	Hack.on('gameclear', function () {
 		// 一旦削除
@@ -108,7 +105,7 @@ function resetMap() {
 	});
 
 	// オーブを壊した後呼ぶ関数
-	let orbNum = 3;
+	let orbNum = 2;
 	const destroyOrb = () => {
 		orbNum--; // オーブを 1 へらす
 		Hack.score += mOrbScore; // 得点を増やす		
@@ -144,14 +141,6 @@ function resetMap() {
 	itemGem1.locate(4, 3, 'map1');
 	itemGem1.tl.moveBy(0, 96, 60).moveBy(0, -96, 60).loop();
 	itemGem1.on(('▼ イベント', 'たおれたとき'), destroyOrb);
-
-
-	const itemGem2 = new RPGObject();
-	itemGem2.mod(('▼ スキン', Hack.assets.orangeOrb));
-	itemGem2.hp = 1;
-	itemGem2.locate(10, 6, 'map1');
-	itemGem2.tl.moveBy(0, -96, 60).moveBy(0, 96, 60).loop();
-	itemGem2.on(('▼ イベント', 'たおれたとき'), destroyOrb);
 
 
 	const itemGem3 = new RPGObject();

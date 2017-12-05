@@ -466,6 +466,10 @@ Object.defineProperty(Hack, 'score', {
 		return Hack.scoreLabel.score;
 	},
 	set: function(value) {
+		if (!Hack.isPlaying) {
+			// ゲーム終了後にはスコアを増やさない
+			return;
+		}
 		if (Hack.scoreLabel.score !== value) {
 			scoreOldValue = Hack.scoreLabel.score;
 			scoreNewValue = value;

@@ -10,7 +10,7 @@ async function gameFunc() {
 	resetMap();
 
 	const player = self.player = new Player(); // プレイヤーをつくる
-	player.locate(2, 1); // はじめの位置
+	player.locate(1, 1); // はじめの位置
 	player.on(('▼ イベント', 'こうげきするとき'), (event) => {
 		const 使い手 = event.target;
 		const ビーム = new RPGObject();
@@ -51,7 +51,7 @@ async function gameFunc() {
 		Hack.startTimer();
 
 		// 魔道書のコードをひらく
-		feeles.openCode('stages/1/code.js');
+		feeles.openCode('stages/1.5/code.js');
 	};
 
 	feeles.closeCode();
@@ -74,8 +74,8 @@ async function gameFunc() {
 		nextButton.image = game.assets['resources/next_button'];
 		nextButton.moveTo(180, 260);
 		nextButton.ontouchstart = () => {
-			// stage 1.5 へ
-			feeles.replace('stages/1.5/index.html');
+			// stage 2 へ
+			feeles.replace('stages/2/index.html');
 		};
 
 		setTimeout(() => {		
@@ -90,13 +90,13 @@ function resetMap() {
 
 	const map1 = Hack.createMap(`
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|10|00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|10|10|10|10|10|10|10|10|10|10|10|10|00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 10|00 10|
-		10|00 10|10|10|10|10|10|10|10|10|00 10|00 10|
-		10|00 10|00 00 00 00 00 00 00 10|00 10|00 10|
-		10|00 10|00 00 00 00 00 00 00 00 00 10|00 10|
-		10|00 10|10|10|10|10|10|10|10|10|10|10|00 10|
+		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
+		10|00 10|10|10|10|10|00 10|10|10|10|10|00 10|
+		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
+		10|00 10|10|10|10|10|00 10|10|10|10|10|00 10|
+		10|00 10|10|10|10|10|00 10|10|10|10|10|00 10|
+		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
+		10|00 10|10|10|10|10|00 10|10|10|10|10|00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
 	`);
@@ -106,7 +106,7 @@ function resetMap() {
 	
 	const itemStairs2 = new RPGObject();
 	itemStairs2.mod(('▼ スキン', _kくだりかいだん));
-	itemStairs2.locate(9, 5, 'map1');
+	itemStairs2.locate(13, 8, 'map1');
 	itemStairs2.layer = RPGMap.Layer.Under;
 	itemStairs2.on(('▼ イベント', 'のった'), async () => {
 		// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
@@ -115,35 +115,24 @@ function resetMap() {
 		Hack.player.resume();
 		resetMap();
 		Hack.floorLabel.score++;
-		player.locate(2, 1); // はじめの位置
+		player.locate(1, 1); // はじめの位置
 	});
 
 
 	// コインを置きまくる
-	for (var i=3; i<=13; i++) {
-		putCoin(i, 1);
+	for (let x = 2; x <= 13; x++) {
+		putCoin(x, 1);
 	}
-	for (var j=2; j<=8; j++) {
-		putCoin(13, j);
+	for (let x = 1; x <= 13; x++) {
+		putCoin(x, 3);
 	}
-	for (var i=1; i<=12; i++) {
-		putCoin(i, 8);
+	for (let x = 1; x <= 13; x++) {
+		putCoin(x, 6);
 	}
-	for (var j=3; j<=7; j++) {
-		putCoin(1, j);
+	for (let x = 1; x <= 12; x++) {
+		putCoin(x, 8);
 	}
-	for (var i=2; i<=11; i++) {
-		putCoin(i, 3);
-	}
-	for (var j=4; j<=6; j++) {
-		putCoin(11, j);
-	}
-	for (var i=3; i<=10; i++) {
-		putCoin(i, 6);
-	}
-	for (var i=3; i<=8; i++) {
-		putCoin(i, 5);
-	}
+
 	/*+ モンスター アイテム せっち システム */
 
 }
@@ -161,7 +150,7 @@ function putCoin(x, y) {
 
 Hack.onreset = function() {
 	resetMap();
-	player.locate(2, 1); // はじめの位置
+	player.locate(1, 1); // はじめの位置
 	player.forward = [1, 0];
 };
 
