@@ -1,15 +1,4 @@
-const methodNames = [
-	'wait',
-	'turnRight',
-	'turnLeft',
-	'dash',
-	'headUp',
-	'headRight',
-	'headDown',
-	'headLeft',
-	'attack',
-	'locate',
-];
+/* global methodNames */
 
 // { [id]: resolve() }
 const resolveStore = {};
@@ -20,7 +9,7 @@ self.addEventListener('message', function(event) {
 	const resolve = resolveStore[event.data.id];
 	if (resolve) {
 		// 登録された Promise を終わらせる
-		resolve();
+		resolve(event.data.returnValue);
 	} else {
 		// かならず存在しているはず. 何かがおかしい
 		const error = new Error('worker.js: resolve function not found');
