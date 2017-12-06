@@ -111,7 +111,6 @@ async function gameFunc() {
 	});
 
 	feeles.setInterval(timerFunc, 100);
-	feeles.setAlias('getSafeTime', getSafeTime);
 
 }
 

@@ -73,7 +73,7 @@ async function gameFunc() {
 			Hack.startTimer();
 		
 			// 魔道書のコードをひらく
-			feeles.openCode('stages/mogura/code.js');
+			feeles.openCode('stages/mogura2/code.js');
 			
 			// 削除
 			Hack.menuGroup.removeChild(strategyTimer);
@@ -111,8 +111,7 @@ async function gameFunc() {
 	});
 
 	feeles.setTimeout(timerFunc, 1000);
-	feeles.setAlias('getSafeTime', getSafeTime);
-
+	
 }
 
 function resetMap() {
@@ -131,6 +130,9 @@ function resetMap() {
 	Hack.maps.map1 = map1;
 
 	Hack.changeMap('map1'); // map1 をロード		
+
+	putRock(4,3);
+	putRock(6,6);
 }
 
 var timerCount = 0;
@@ -156,8 +158,17 @@ function moguraOn(x, y) {
 		feeles.setTimeout(timerFunc, 1000);
 	};
 }
+
 function moguraOff() {
 	itemMogura.destroy();
+}
+
+function putRock(x, y ) {
+	const item6 = new RPGObject();
+	item6.mod(('▼ スキン', _iいしかべ));
+	item6.locate(x, y, 'map1');
+	item6.on(('▼ イベント', 'こうげきされた'), () => {
+	});
 }
 
 Hack.onreset = function() {
