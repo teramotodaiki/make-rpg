@@ -144,6 +144,6 @@ feeles.connected.then(({ port }) => {
 		query: 'menuTitle',
 		value: 'ハックフォープレイ'
 	});
-});  
+});
 
 export default common;
