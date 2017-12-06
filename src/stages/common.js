@@ -37,12 +37,15 @@ const common = () => {
 	// スコアの表示位置変更
 	Hack.scoreLabel.moveTo(160, 8);
 	Hack.scoreLabel.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	Hack.scoreLabel.scale(4);
+	Hack.scoreLabel.label = '';
 
 	// 階層ラベル (同じマップになんども enter することを想定している)
 	Hack.floorLabel = new enchant.ui.ScoreLabel(8, 8);
 	Hack.floorLabel.backgroundColor = 'rgba(0, 0, 0, 0.5)';
 	Hack.floorLabel.score = 1;
 	Hack.floorLabel.label = 'FLOOR:';
+	Hack.floorLabel.opacity = 0;
 	Hack.menuGroup.addChild(Hack.floorLabel);
 
 	// 詠唱アニメーション
@@ -76,7 +79,7 @@ const common = () => {
 		scoreEffect.tl.moveBy(0, -8, 8).removeFromScene();
 		// scorechange のタイミングでシーンに追加する場合は enterframe を呼ばないと label が反映されない
 		scoreEffect.dispatchEvent(new Event('enterframe'));
-		Hack.world.addChild(scoreEffect);	
+		Hack.world.addChild(scoreEffect);
 	});
 
 	// 魔道書に構文エラーがあったとき
