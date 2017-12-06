@@ -124,7 +124,11 @@ Hack.startTimer = () => {
 			}
 
 			// 表示を更新
-			div.innerHTML = `スコア：${Hack.score} 点<br />のこり：${last} 秒`;
+			const min = Math.floor(last / 60);
+			const sec = last % 60;
+			div.innerHTML = `
+			スコア：${Hack.score} 点<br />
+			のこり：${min > 0 ? `${min} 分` : ''}${sec} 秒`;
 		}
 	});
 	Hack.menuGroup.addChild(limitTimer);
