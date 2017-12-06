@@ -2,6 +2,7 @@
 import enchant from '../enchantjs/enchant';
 import Hack from '../hackforplay/hack';
 import workerJs from 'raw-loader!worker';
+import addSnippet from 'addSnippet';
 
 // コードを受け取ってから実行を開始するまでの待機時間
 window.WAIT_TIME = 3000;
@@ -12,12 +13,21 @@ let timerId;
 // ワーカー側で使える関数の名前リスト
 const methods = {};
 
-// feeles.setAlias を上書き
-// methods に追加することで、ワーカーで使えるようにする
-// => feeles.exports に書き出すのをやめる
-// => 'message.complete' イベントを発火させない
-feeles.setAlias = function(name, ref) {
-	methods[name] = ref;
+/**
+ * feeles.setAlias を上書きする
+ * methods に追加することで、ワーカーで使えるようにする
+ * completion が設定された場合、スニペットを登録する
+ * @param {String} prefix 関数の名前(入力補完に使う)
+ * @param {Function} ref 登録したい関数
+ * @param {String|undefined} completion 補完したときに出てくる文字列
+ */
+feeles.setAlias = function(prefix, ref, completion) {
+	// ワーカーで使えるように
+	methods[prefix] = ref;
+	if (completion) {
+		// スニペットを追加
+		addSnippet({ prefix, text: completion });
+	}	
 };
 
 export default function (code) {

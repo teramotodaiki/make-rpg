@@ -6,6 +6,7 @@ import enchant, { Event } from 'enchantjs/enchant';
 import { kill } from 'feeles/eval';
 import 'mod/coordinate';
 import snippets from 'snippets';
+import addSnippet from 'addSnippet';
 
 
 window.STRATEGY_TIME = 0 * 1000; // 説明画面でとまる秒数. 実際には１分とか.
@@ -116,13 +117,8 @@ Hack.startTimer = () => {
 	Hack.menuGroup.addChild(limitTimer);
 };
 
+
 // 必要なエイリアスを書き出す
-feeles.connected.then(({ port }) => {
-	port.postMessage({
-		// id: getUniqueId(),
-		query: 'complete',
-		value: snippets
-	});
-});
+addSnippet(...snippets);
 
 export default common;
