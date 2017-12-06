@@ -117,6 +117,11 @@ async function gameFunc() {
 		}, 4000);
 	});
 
+
+	player.ondangan = () => {
+		Hack.log('あたった');
+	};
+
 }
 var danganTimer;
 
@@ -186,6 +191,10 @@ function setDanganVertical(x) {
 			const time = (Date.now() - initTime) / 1000;
 			// 等速直線運動 % 縦の長さ
 			itemDangan.moveTo(x * 32, obtain(initY + speed * time));
+			// 当たり判定 (円の当たり判定)
+			if (player.within(itemDangan, 16)) {
+				player.dispatchEvent(new Event('dangan'));
+			}
 		};
 		Hack.defaultParentNode.addChild(itemDangan);
 	}
@@ -207,6 +216,8 @@ Hack.onreset = function() {
 	feeles.clearInterval(danganTimer);
 	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
+	// Hack.log をリセット
+	Hack.textarea.text = '';
 };
 
 export default gameFunc;
