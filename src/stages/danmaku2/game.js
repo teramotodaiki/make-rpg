@@ -5,11 +5,24 @@ import * as sequence from 'sequence';
  * デバッグ中につき魔道書は最初から表示されています
  */
 var mCoinScore = 1;
+var startPlayerX = 1;
+var startPlayerY = 7;
+
+// １つのレーンに存在する弾丸のかず
+const amount = 3;
+// １つのレーンから弾丸が発射される周期 [sec]
+const quoteTime = 4;
+// １つのレーンが繰り返す長さ [px]
+const quoteLength = 320 + 32; // スプライトが完全に隠れるまで
+// 隣のレーンとの位相差 [sec]
+const gap = 1;
+
+
 var coinArray = new Array();
 var trapArray = new Array();
-var trapFlag = false;
-var startPlayerX = 1;
-var startPlayerY = 2;
+
+var danganTimer;
+
 
 async function gameFunc() {
 	resetMap();
@@ -45,20 +58,6 @@ async function gameFunc() {
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
-	// const startButton = new enchant.Sprite(120, 32);
-	// startButton.image = game.assets['resources/start_button'];
-	// startButton.moveTo(180, 220);
-	// Hack.menuGroup.addChild(startButton);
-	// startButton.ontouchstart = () => {
-	// 	Hack.menuGroup.removeChild(description);
-	// 	Hack.menuGroup.removeChild(startButton);
-	// 	// タイマー開始
-	// 	Hack.startTimer();
-
-	// 	// 魔道書のコードをひらく
-	// 	feeles.openCode('stages/mogura/code.js');
-	// };
-
 	// 説明画面（作戦タイム）のタイマー => ゲームスタート
 	const strategyTimer = new enchant.ui.MutableText(352, 8);
 	const limit = Date.now() + window.STRATEGY_TIME;
@@ -73,7 +72,7 @@ async function gameFunc() {
 			Hack.startTimer();
 		
 			// 魔道書のコードをひらく
-			feeles.openCode('stages/mogura2/code.js');
+			feeles.openCode('stages/danmaku2/code.js');
 			
 			// 削除
 			Hack.menuGroup.removeChild(strategyTimer);
@@ -110,113 +109,126 @@ async function gameFunc() {
 		}, 4000);
 	});
 
-	feeles.setTimeout(timerFunc, 1000);
-	feeles.setAlias('check', check, 'check() // 主人公の向いてる隣接マスにモグラがいるか否か\n');
+
+	player.ondangan = () => {
+		Hack.log('あたった');
+	};
+
+	feeles.setInterval(timerFunc, 2000);
 
 }
 
+
 function resetMap() {
+
 	const map1 = Hack.createMap(`
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
+		10|03 03 03 03 03 03 03 03 03 03 03 03 00 10|
+		10|03 03 03 03 03 03 03 03 03 03 03 03 00 10|
+		10|03 03 03 03 03 03 03 03 03 03 03 03 00 10|
+		10|03 03 03 03 03 03 03 03 03 03 03 03 00 10|
+		10|03 03 03 03 03 03 03 03 03 03 03 03 00 10|
+		10|03 03 03 03 03 03 03 03 03 03 03 03 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 05 00 05 00 05 00 05 00 05 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 05 00 05 00 05 00 05 00 05 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
+		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
 	`);
 	Hack.maps.map1 = map1;
 
-	Hack.changeMap('map1'); // map1 をロード		
-
-	putRock(4,3);
-	putRock(6,6);
-}
-
-var timerCount = 0;
-var itemMogura;
-var moguraX = 1;
-var moguraY = 0;
-
-function timerFunc() {
-	moguraX+=2;
-	moguraY+=3;
-	if (moguraX>11) {
-		moguraX = 3;
-	} 
-	if (moguraY > 6) {
-		moguraY = 3;
-	}
-	moguraOn(moguraX, moguraY);
-}
-
-
-function moguraOn(x, y) {
-	itemMogura = new RPGObject();
-	itemMogura.mod(('▼ スキン', _tつぼ));
-	itemMogura.locate(x, y, 'map1');
-
-	itemMogura.layer = RPGMap.Layer.Under;
-	itemMogura.onこうげきされた = () => {
-		itemMogura.destroy();
-		Hack.score += 10;
-		feeles.setTimeout(timerFunc, 1000);
-	};
-}
-
-async function check() {
-	if (itemMogura.parentNode === null) {
-		return 0;
-	}
-	// 右向き
-	if (player.forward.x == 1) {
-		if ((moguraX == player.mapX+1) && (moguraY == player.mapY)) {
-			return 1;
-		} else {
-			return 0;
-		}
-	} 
-	// 左向き
-	else if (player.forward.x == -1) {
-		if ((moguraX == player.mapX-1) && (moguraY == player.mapY)) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-	// 下向き
-	else if (player.forward.y == 1) {
-		if ((moguraX == player.mapX) && (moguraY == player.mapY+1)) {
-			return 1;
-		} else {
-			return 0;
-		}
-	}
-	// 上向き
-	else if (player.forward.y == -1) {
-		if ((moguraX == player.mapX) && (moguraY == player.mapY-1)) {
-			return 1;
-		} else {
-			return 0;
-		}	
-	}
-}
-
-function putRock(x, y ) {
-	const item6 = new RPGObject();
-	item6.mod(('▼ スキン', _iいしかべ));
-	item6.locate(x, y, 'map1');
-	item6.on(('▼ イベント', 'こうげきされた'), () => {
+	Hack.changeMap('map1'); // map1 をロード
+	
+	const itemStairs2 = new RPGObject();
+	itemStairs2.mod(('▼ スキン', _kくだりかいだん));
+	itemStairs2.locate(1, 1, 'map1');
+	itemStairs2.layer = RPGMap.Layer.Under;
+	itemStairs2.on(('▼ イベント', 'のった'), async () => {
+		// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
+		Hack.player.stop();
+		await new Promise((resolve) => setTimeout(resolve, 100));
+		Hack.player.resume();
+		resetMap();
+		Hack.floorLabel.score++;
+		player.locate(startPlayerX, startPlayerY); // はじめの位置
 	});
+
+	// setTraps(0);
 }
+
+function setTraps(pattern) {
+	// トラップ消す
+	if (trapArray.length > 1) {
+		// for (var i=0; i<trapArray.length; i++) {
+		while(trapArray.length>0) {
+			console.log("array length:" + trapArray.length);
+			trapArray[trapArray.length-1].destroy();
+			trapArray.pop();
+		}
+	}
+
+	switch(pattern) {
+		case 0: {
+			// トラップ出す
+			for (var i=-10; i<=4; i+=4) {
+				for (var k=0; k<=14; k++) {
+					const trap = putTrap(k,i+k);
+					trapArray.push(trap);					
+				}
+			}
+			break;
+		}
+		case 1: {
+			// トラップ出す
+			for (var i=-12; i<=4; i+=4) {
+				for (var k=0; k<=14; k++) {
+					const trap = putTrap(k,i+k);
+					trapArray.push(trap);					
+				}
+			}
+			break;
+		}
+	}
+}
+
+var trapCount=0;
+function timerFunc() {
+	setTraps(trapCount%2);
+	trapCount++;
+}
+
+
+function putCoin(x, y) {
+	const itemCoin1 = new RPGObject();
+	itemCoin1.mod(('▼ スキン', _kコイン));
+	itemCoin1.locate(x, y, 'map1');
+	itemCoin1.onplayerenter = () => {
+		itemCoin1.destroy();
+		Hack.score += mCoinScore;
+	};
+	return itemCoin1;
+}
+
+function putTrap(x, y) {
+	const item2 = new RPGObject();
+	item2.mod(('▼ スキン', _tつぼ));
+	item2.locate(x, y, 'map1');
+	item2.layer = RPGMap.Layer.Under;
+	item2.on(('▼ イベント', 'のった'), () => {
+		item2.mod(('▼ スキン', _tつぼ));
+		player.hp -= 1;
+		player.damageTime = 30;
+
+	});
+	return item2;
+}
+
 
 Hack.onreset = function() {
 	resetMap();
+	feeles.clearInterval(danganTimer);
 	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
+	// Hack.log をリセット
+	Hack.textarea.text = '';
 };
 
 export default gameFunc;
