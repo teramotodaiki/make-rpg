@@ -217,6 +217,11 @@ Hack.onreset = function() {
 	resetMap();
 	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
+
+	itemMogura.destroy();
+	moguraX = 1;
+	moguraY = 0;
+	feeles.setTimeout(timerFunc, 1000);
 };
 
 export default gameFunc;
