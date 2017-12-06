@@ -57,7 +57,7 @@ async function gameFunc() {
 		return 'トレーニングステージ専用の関数です!!';
 	}
 	// 関数を登録する
-	feeles.setAlias('trainingOnly', trainingOnly);
+	feeles.setAlias('trainingOnly', trainingOnly, 'trainingOnly() // トレーニング専用\n');
 
 }
 
