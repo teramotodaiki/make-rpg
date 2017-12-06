@@ -115,9 +115,42 @@ async function gameFunc() {
 	};
 
 	feeles.setInterval(timerFunc, 2000);
+	feeles.setAlias('check', check, 'check() // 主人公の向いてる隣接マスに罠がでてるか否か\n');
 
 }
 
+async function check() {
+
+	var targetX, targetY;
+	if(player.forward.x==1) {
+		targetX = player.mapX+1;
+		targetY = player.mapY;
+	} else if(player.forward.x==-1) {
+		targetX = player.mapX-1;
+		targetY = player.mapY;
+	} else if(player.forward.y==-1) {
+		targetX = player.mapX;
+		targetY = player.mapY-1;
+	} else if(player.forward.y==1) {
+		targetX = player.mapX;
+		targetY = player.mapY+1;
+	}
+
+	if (trapArray.length > 1) {
+		// for (var i=0; i<trapArray.length; i++) {
+		for(var i=0; i<trapArray.length; i++) {
+			var obj = trapArray[i];
+			console.log("check array:" + i +", x:" + obj.mapX+", y:" + obj.mapY + "targetX:"+targetX+",y:"+targetY) ;
+			if (obj.mapX == targetX && obj.mapY == targetY) {
+				return 1;
+			}
+		}
+		return 0;
+	} else {
+		return 0;
+	}
+
+}
 
 function resetMap() {
 
@@ -159,7 +192,6 @@ function setTraps(pattern) {
 	if (trapArray.length > 1) {
 		// for (var i=0; i<trapArray.length; i++) {
 		while(trapArray.length>0) {
-			console.log("array length:" + trapArray.length);
 			trapArray[trapArray.length-1].destroy();
 			trapArray.pop();
 		}
@@ -212,11 +244,19 @@ function putTrap(x, y) {
 	item2.mod(('▼ スキン', _tつぼ));
 	item2.locate(x, y, 'map1');
 	item2.layer = RPGMap.Layer.Under;
+
+	// 出現時に真上にプレイヤーがいた
+	if (player.mapX == x && player.mapY == y) {
+		player.hp -= 1;
+		player.damageTime = 30;
+		Hack.log("のった2");		
+	}
+	
 	item2.on(('▼ イベント', 'のった'), () => {
 		item2.mod(('▼ スキン', _tつぼ));
 		player.hp -= 1;
 		player.damageTime = 30;
-
+		Hack.log("のった");
 	});
 	return item2;
 }

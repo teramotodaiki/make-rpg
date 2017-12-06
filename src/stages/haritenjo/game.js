@@ -181,6 +181,7 @@ function getSafeTime() {
 	}
 }
 
+
 function setTraps() {
 	// トラップ発動
 	if (!trapFlag) {
