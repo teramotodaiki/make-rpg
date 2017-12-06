@@ -8,6 +8,15 @@ var mCoinScore = 1;
 var startPlayerX = 1;
 var startPlayerY = 7;
 
+// １つのレーンに存在する弾丸のかず
+const amount = 3;
+// １つのレーンから弾丸が発射される周期 [sec]
+const quoteTime = 4;
+// １つのレーンが繰り返す長さ [px]
+const quoteLength = 320 + 32; // スプライトが完全に隠れるまで
+// 隣のレーンとの位相差 [sec]
+const gap = 1;
+
 async function gameFunc() {
 	resetMap();
 
@@ -108,6 +117,11 @@ async function gameFunc() {
 		}, 4000);
 	});
 
+
+	player.ondangan = () => {
+		Hack.log('あたった');
+	};
+
 }
 var danganTimer;
 
@@ -144,48 +158,46 @@ function resetMap() {
 		player.locate(startPlayerX, startPlayerY); // はじめの位置
 	});
 
-	// わな置きまくる。
 	/*+ モンスター アイテム せっち システム */
-	startDangan();
-	danganTimer = feeles.setInterval(startDangan, 4000);
-	// feeles.setInterval(startDangan2, 400);
-}
 
-function startDangan() {
-	for (var i=2; i<=14; i++) {
-		setDanganVertical(i, i+8);
-	}
-}
-var danganY = 8;
-function startDangan2() {
-	setDanganHorizontal(12, danganY);
-	danganY--;
-	if (danganY < 0) {
-		danganY = 8;
+	for (let x = 2; x <= 14; x++) {
+		// x のレーンに弾丸配置＆移動開始
+		setDanganVertical(x);
 	}
 }
 
-function setDanganVertical(x, y) {
-	const itemDangan = new RPGObject();
-	itemDangan.mod(('▼ スキン', _tつぼ));
-	itemDangan.locate(x, y, 'map1');
-	itemDangan.forward = [-1, 0];
-	itemDangan.velocity(0, -1);
-	itemDangan.collisionFlag = false;
-	itemDangan.on(('▼ イベント', 'ふれはじめた'), () => {
-		// player.hp = 0;
-	});
-}
-function setDanganHorizontal(x, y) {
-	const itemDangan = new RPGObject();
-	itemDangan.mod(('▼ スキン', _tつぼ));
-	itemDangan.locate(x, y, 'map1');
-	itemDangan.forward = [-1, 0];
-	itemDangan.velocity(1, 0);
-	itemDangan.collisionFlag = false;
-	itemDangan.on(('▼ イベント', 'ふれはじめた'), () => {
-		// player.hp = 0;
-	});
+// 弾丸の配列
+const danganArray = [];
+
+// x のレーンに amount 個配置
+function setDanganVertical(x) {
+	// 初期時刻
+	const initTime = Date.now();
+	// 縦方向のスピード [px/sec]
+	const speed = -quoteLength / amount / quoteTime;
+	// -32 ~ quoteLength - 32 までの画面内に収める (負の数も考慮する)
+	const obtain = y =>  ((y % quoteLength) + quoteLength) % quoteLength - 32;
+	// 縦に amount 個並べる
+	for (let index = 0; index < amount; index++) {
+		const itemDangan = new Sprite(32, 32);
+		// 見た目を「つぼ」にする
+		_tつぼ.call(itemDangan);
+
+		// 初期位置 [px] (縦に amount 個だけ均等に並べたあと, x に比例した位相差遅れを加算する)
+		const initY = quoteLength / amount * index + x * -speed * gap;
+		// 動かす
+		itemDangan.onenterframe = () => {
+			// 経過時間
+			const time = (Date.now() - initTime) / 1000;
+			// 等速直線運動 % 縦の長さ
+			itemDangan.moveTo(x * 32, obtain(initY + speed * time));
+			// 当たり判定 (円の当たり判定)
+			if (player.within(itemDangan, 16)) {
+				player.dispatchEvent(new Event('dangan'));
+			}
+		};
+		Hack.defaultParentNode.addChild(itemDangan);
+	}
 }
 
 function putCoin(x, y) {
@@ -204,6 +216,8 @@ Hack.onreset = function() {
 	feeles.clearInterval(danganTimer);
 	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
+	// Hack.log をリセット
+	Hack.textarea.text = '';
 };
 
 export default gameFunc;
