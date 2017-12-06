@@ -202,7 +202,9 @@ MapObject.dictionary = {
 	greenOrb: 41,
 	pinkOrb: 42,
 	orangeOrb: 43,
-	energyBall: 44
+	energyBall: 44,
+	trap: 55,
+	usedTrap: 56,
 
 	// 新仕様公式定義
 	// clay: 320,

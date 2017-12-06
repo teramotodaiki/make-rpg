@@ -138,4 +138,12 @@ Hack.startTimer = () => {
 // 必要なエイリアスを書き出す
 addSnippet(...snippets);
 
+// ヘッダーに文字を出す
+feeles.connected.then(({ port }) => {
+	port.postMessage({
+		query: 'menuTitle',
+		value: 'ハックフォープレイ'
+	});
+});
+
 export default common;
