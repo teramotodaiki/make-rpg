@@ -111,7 +111,8 @@ async function gameFunc() {
 	});
 
 	feeles.setTimeout(timerFunc, 1000);
-	
+	feeles.setAlias('check', check, 'check() // 主人公の向いてる隣接マスにモグラがいるか否か\n');
+
 }
 
 function resetMap() {
@@ -136,27 +137,69 @@ function resetMap() {
 }
 
 var timerCount = 0;
-var moguraX = 0;
+var itemMogura;
+var moguraX = 1;
 var moguraY = 0;
 
 function timerFunc() {
-	moguraOn(moguraX + 3, moguraY + 3);
-	moguraX = (moguraX + 2) % 10;
-	moguraY = (moguraY + 3) % 6;
+	moguraX+=2;
+	moguraY+=3;
+	if (moguraX>11) {
+		moguraX = 3;
+	} 
+	if (moguraY > 6) {
+		moguraY = 3;
+	}
+	moguraOn(moguraX, moguraY);
 }
 
-var itemMogura;
 
 function moguraOn(x, y) {
 	itemMogura = new RPGObject();
 	itemMogura.mod(('▼ スキン', _tつぼ));
 	itemMogura.locate(x, y, 'map1');
+
 	itemMogura.layer = RPGMap.Layer.Under;
 	itemMogura.onこうげきされた = () => {
 		moguraOff();
 		Hack.score += 10;
 		feeles.setTimeout(timerFunc, 1000);
 	};
+}
+
+async function check() {
+	// 右向き
+	if (player.forward.x == 1) {
+		if ((moguraX == player.mapX+1) && (moguraY == player.mapY)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	} 
+	// 左向き
+	else if (player.forward.x == -1) {
+		if ((moguraX == player.mapX-1) && (moguraY == player.mapY)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	// 下向き
+	else if (player.forward.y == 1) {
+		if ((moguraX == player.mapX) && (moguraY == player.mapY+1)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	// 上向き
+	else if (player.forward.y == -1) {
+		if ((moguraX == player.mapX) && (moguraY == player.mapY-1)) {
+			return 1;
+		} else {
+			return 0;
+		}	
+	}
 }
 
 function moguraOff() {
