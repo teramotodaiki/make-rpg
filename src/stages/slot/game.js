@@ -112,6 +112,15 @@ async function gameFunc() {
 			Hack.overlayGroup.addChild(nextButton);		
 		}, 4000);
 	});
+
+
+	// トレーニング専用の関数を定義
+	async function readKanban() {
+		return slotAnswer;
+	}
+	// 関数を登録する
+	feeles.setAlias('readKanban', readKanban, 'readKanban() // 看板を読む\n');
+
 }
 
 function resetMap() {
@@ -165,7 +174,7 @@ function putSlot1(x, y) {
 }
 
 function putSlot2(x, y) {
-	const itemSlot2 = new RPGObject();
+	itemSlot2 = new RPGObject();
 	itemSlot2.mod(('▼ スキン', _tたからばこひらいた));
 	itemSlot2.locate(x, y, 'map1');
 	itemSlot2.on(('▼ イベント', 'こうげきされた'), () => {
@@ -174,7 +183,7 @@ function putSlot2(x, y) {
 			slotNumber2 = 0;
 		}
 		checkAnswer();
-		Hack.log((slotNumber1*10 + slotNumber2)+', ' + slotNumber2);
+		Hack.log((slotNumber1*10 + slotNumber2));
 	});
 }
 
