@@ -9,11 +9,16 @@ var coinArray = new Array();
 var trapArray = new Array();
 var trapFlag = false;
 var startPlayerX = 1;
-var startPlayerY = 2;
+var startPlayerY = 4;
 var slotNumber1 = 0;
 var slotNumber2 = 0;
 var slotAnswer1 = 0;
 var slotAnswer2 = 0;
+
+var kanban1X = 2;
+var kanban1Y = 3;
+var kanban2X = 6;
+var kanban2Y = 3;
 
 async function gameFunc() {
 	resetMap();
@@ -100,27 +105,31 @@ async function gameFunc() {
 		}, 4000);
 	});
 
+	// 関数を登録する
+	feeles.setAlias('check', check, 'check() // 看板を読む\n');
+}
 
-	// トレーニング専用の関数を定義
-	async function readBoard1() {
+// トレーニング専用の関数を定義
+async function check() {
+	console.log("a1:" + slotAnswer1 + ", a2:" + slotAnswer2);
+	if ((player.mapX == kanban1X) && (player.mapY == kanban1Y+1) && (player.forward.y == -1)) {
 		return slotAnswer1;
-	}
-	// トレーニング専用の関数を定義
-	async function readBoard2() {
+	} 
+	else if ((player.mapX == kanban2X) && (player.mapY == kanban2Y+1) && (player.forward.y == -1)) {
 		return slotAnswer2;
 	}
-	// 関数を登録する
-	feeles.setAlias('readBoard1', readBoard1, 'readBoard1() // 看板1を読む\n');
-	feeles.setAlias('readBoard2', readBoard2, 'readBoard2() // 看板2を読む\n');
+	else {
+		return -1;
+	}
 
 }
 
 function resetMap() {
 	const map1 = Hack.createMap(`
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
+		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
+		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
+		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
@@ -135,9 +144,10 @@ function resetMap() {
 	// ちょっと特別に十の位は0以外にしてあげよう
  	slotAnswer1 = Math.floor(Math.random()*10);
  	slotAnswer2 = Math.floor(Math.random()*10);
-	putKanban(7, 3);
-	putSlot1(5, 5);
-	putSlot2(9, 5);
+	putKanban(kanban1X, kanban1Y);
+	putKanban(kanban2X, kanban2Y);
+	putSlot1(kanban1X+1, kanban1Y);
+	putSlot2(kanban2X+1, kanban2Y);
 }
 
 function putKanban(x, y) {
