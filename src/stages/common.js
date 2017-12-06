@@ -95,8 +95,18 @@ const common = () => {
 		// 細かい内容はコンソールに出力する
 		console.error(error);
 	});
-
 };
+
+// スコア (HTML)
+const div = document.createElement('div');
+div.style.position = 'absolute';
+div.style.bottom = 0;
+div.style.height = '100px';
+div.style.fontSize = '32px';
+div.style.fontWeight = 'bold';
+div.style.backgroundColor = 'white';
+div.style.width = '100%';
+document.body.appendChild(div);
 
 // タイマーをスタートさせる
 Hack.startTimer = () => {
@@ -112,6 +122,13 @@ Hack.startTimer = () => {
 				// クリア（これ以降はスコアが増えない）
 				Hack.gameclear();
 			}
+
+			// 表示を更新
+			const min = Math.floor(last / 60);
+			const sec = last % 60;
+			div.innerHTML = `
+			スコア：${Hack.score} 点<br />
+			のこり：${min > 0 ? `${min} 分` : ''}${sec} 秒`;
 		}
 	});
 	Hack.menuGroup.addChild(limitTimer);
