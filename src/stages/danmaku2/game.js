@@ -202,8 +202,10 @@ function setTraps(pattern) {
 			// トラップ出す
 			for (var i=-10; i<=4; i+=4) {
 				for (var k=0; k<=14; k++) {
-					const trap = putTrap(k,i+k);
-					trapArray.push(trap);					
+					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
+						const trap = putTrap(k,i+k);
+						trapArray.push(trap);			
+					}		
 				}
 			}
 			break;
@@ -212,8 +214,10 @@ function setTraps(pattern) {
 			// トラップ出す
 			for (var i=-12; i<=4; i+=4) {
 				for (var k=0; k<=14; k++) {
-					const trap = putTrap(k,i+k);
-					trapArray.push(trap);					
+					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
+						const trap = putTrap(k,i+k);
+						trapArray.push(trap);					
+					}
 				}
 			}
 			break;
@@ -241,7 +245,7 @@ function putCoin(x, y) {
 
 function putTrap(x, y) {
 	const item2 = new RPGObject();
-	item2.mod(('▼ スキン', _tつぼ));
+	item2.mod(('▼ スキン', _wわな));
 	item2.locate(x, y, 'map1');
 	item2.layer = RPGMap.Layer.Under;
 
