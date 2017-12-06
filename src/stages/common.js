@@ -96,6 +96,20 @@ const common = () => {
 		console.error(error);
 	});
 
+	// スコア (HTML)
+	const div = document.createElement('div');
+	div.style.position = 'absolute';
+	div.style.bottom = 0;
+	div.style.height = '100px';
+	div.style.fontSize = '32px';
+	div.style.fontWeight = 'bold';
+	div.style.backgroundColor = 'white';
+	div.style.width = '100%';
+	div.textContent = 'スコア：' + Hack.score;
+	document.body.appendChild(div);
+	Hack.on('scorechange', () => {
+		div.textContent = 'スコア：' + Hack.score;
+	});
 };
 
 // タイマーをスタートさせる
