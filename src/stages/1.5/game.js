@@ -32,7 +32,7 @@ async function gameFunc() {
 	window.WAIT_TIME = 3000;
 
 	// ゲーム時間設定
-	window.TIME_LIMIT = 60 * 1000;
+	window.TIME_LIMIT = 300 * 1000;
 
 	// せつめい
 	const description = new enchant.Sprite(388, 224);
