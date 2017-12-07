@@ -548,6 +548,19 @@ Hack.assets.slot = function () {
 	this.frame = 0;	
 };
 
+Hack.assets.mogura = function () {
+	this.image = game.assets['resources/mogura'];
+	this.width = 36;
+	this.height = 32;
+	this.offset = {
+		x: 0,
+		y: -4
+	}; 
+	this.directionType = 'single';
+	this.forward = [0, -1];
+	this.frame = [0, 0, 0, 1, null];		
+};
+
 var __Effect = enchant.Class(RPGObject, {
 	initialize: function(velocityX, velocityY, lifetime, randomize) {
 		RPGObject.call(this, 32, 32, 0, 0);
