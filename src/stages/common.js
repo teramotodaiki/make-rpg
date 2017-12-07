@@ -106,6 +106,14 @@ const common = () => {
 		// 細かい内容はコンソールに出力する
 		console.error(error);
 	});
+
+	Hack.on('sendworker', event => {
+		// ワーカーにメッセージを送ったとき
+		if (event.method.name === 'check') {
+			// check という名前の関数をコールした直後に割り込む
+			inspect({ result: event.returnValue });
+		}
+	});
 };
 
 // タイマーをスタートさせる

@@ -113,10 +113,16 @@ ${workerJs}
 				throw new Error(`メソッド ${name} は登録されていません. feeles.setAlias(name, func); してください`);
 			}
 			method(...args).then(returnValue => {
+				// ワーカーにメッセージ（戻り値）を送る
 				event.target.postMessage({
 					id,
 					returnValue
 				});
+				// Hack.onsendworker を発火
+				const sendworkerEvent = new Event('sendworker');
+				sendworkerEvent.method = method;
+				sendworkerEvent.returnValue = returnValue;
+				Hack.dispatchEvent(sendworkerEvent);
 			});
 		});
 
