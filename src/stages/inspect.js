@@ -3,14 +3,16 @@ const state = {
 	// 現在のスコア
 	score: 0,
 	// 残り時間（秒）
-	last: 0
+	last: 0,
+	// check() の結果の数値
+	result: 0
 };
 
 // スコア (HTML)
 const div = document.createElement('div');
 div.style.position = 'absolute';
 div.style.bottom = 0;
-div.style.height = '100px';
+div.style.height = '150px';
 div.style.fontSize = '32px';
 div.style.fontWeight = 'bold';
 div.style.backgroundColor = 'white';
@@ -26,7 +28,8 @@ function inspect(nextState) {
 	const sec = state.last % 60;
 	div.innerHTML = `
 	スコア：${state.score} 点<br />
-	のこり：${min > 0 ? `${min} 分` : ''}${sec} 秒`;
+	のこり：${min > 0 ? `${min} 分` : ''}${sec} 秒<br />
+	けっか：${state.result}`;
 }
 
 export default inspect;
