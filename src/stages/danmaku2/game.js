@@ -19,6 +19,8 @@ const gap = 1;
 
 
 var coinArray = new Array();
+var coinArray0 = new Array();
+var coinArray1 = new Array();
 var trapArray = new Array();
 
 var trapTimer;
@@ -187,6 +189,17 @@ function resetMap() {
 
 	putButton(2,7);
 	// setTraps(0);
+
+	// コインを置きまくる
+	for (var i=4; i<=13; i++) {
+		const coin = putCoin(i, 7);
+		coinArray.push(coin);
+	}
+	for (var j=2; j<=6; j++) {
+		const coin = putCoin(13, j);
+		coinArray.push(coin);
+	}
+
 }
 
 function setTraps(pattern) {
@@ -201,24 +214,77 @@ function setTraps(pattern) {
 
 	switch(pattern) {
 		case 0: {
+			// coin復活
+			if (coinArray1.length>1) {
+				for (var i=0; i<coinArray1.length; i++) {
+					// var coinX = coinArray1[i].x;
+					// var coinY = coinArray1[i].y;
+					// const coin = putCoin(coinX, coinY);
+					// // coinArray.push(coin);
+					coinArray1[i].mod(('▼ スキン', _kコイン));
+				}
+			}
 			// トラップ出す
 			for (var i=-10; i<=4; i+=4) {
 				for (var k=0; k<=14; k++) {
 					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
 						const trap = putTrap(k,i+k);
-						trapArray.push(trap);			
+						trapArray.push(trap);	
+
+						// トラップの上にコインがあったら一旦消してスタックする
+						if (coinArray.length>1) {
+							for(var l=0; l<coinArray.length; l++) {
+								var coinX = coinArray[l].mapX;
+								var coinY = coinArray[l].mapY;
+								if (coinX == k && coinY == (i+k)) {
+									console.log("coin重なった" + coinX+","+coinY);
+									coinArray0.push(coinArray[l]);
+									coinArray[l].mod(('▼ スキン', _wわなかかった));
+
+									// coinArray[l].destroy();
+								}
+							}
+						}		
 					}		
 				}
 			}
 			break;
 		}
 		case 1: {
+			// coin復活
+			if (coinArray0.length>1) {
+				for (var i=0; i<coinArray0.length; i++) {
+					// var coinX = coinArray0[i].x;
+					// var coinY = coinArray0[i].y;
+					// console.log("coin復活" + coinX+"," + coinY);
+					// const coin = putCoin(coinX, coinY);
+					// coinArray.push(coin);
+					coinArray0[i].mod(('▼ スキン', _kコイン));
+				}
+			}
+
 			// トラップ出す
 			for (var i=-12; i<=4; i+=4) {
 				for (var k=0; k<=14; k++) {
 					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
 						const trap = putTrap(k,i+k);
 						trapArray.push(trap);					
+
+						// トラップの上にコインがあったら一旦消してスタックする
+						if (coinArray.length>1) {
+							for(var l=0; l<coinArray.length; l++) {
+								var coinX = coinArray[l].mapX;
+								var coinY = coinArray[l].mapY;
+								if (coinX == k && coinY == (i+k)) {
+									// coinArray1.push(new Point(coinX, coinY));
+									// // coinArray[l].destroy();
+									coinArray1.push(coinArray[l]);
+
+									coinArray[l].mod(('▼ スキン', _wわなかかった));
+
+								}
+							}
+						}		
 					}
 				}
 			}
@@ -281,11 +347,19 @@ function putTrap(x, y) {
 
 Hack.onreset = function() {
 	resetMap();
+	trapCount = 0;
 	feeles.clearInterval(trapTimer);
 	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
 	// Hack.log をリセット
 	Hack.textarea.text = '';
 };
+
+
+var Point = function(x, y) {
+    // メンバ変数 (インスタンス変数)
+    this.x = x;
+    this.y = y;
+}
 
 export default gameFunc;
