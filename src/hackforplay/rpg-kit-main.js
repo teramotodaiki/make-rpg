@@ -4,7 +4,7 @@ import 'hackforplay/enchantjs-kit';
 import 'mod/stop';
 
 import Hack from 'hackforplay/hack';
-import RPGObject from 'hackforplay/rpg-kit-rpgobjects';
+import RPGObject from 'hackforplay/object/object';
 import MapObject from 'hackforplay/rpg-map';
 import 'hackforplay/rpg-kit-color';
 
