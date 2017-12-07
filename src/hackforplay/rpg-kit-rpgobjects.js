@@ -4,7 +4,7 @@ import enchant from 'enchantjs/enchant';
 import 'enchantjs/ui.enchant';
 import Hack from 'hackforplay/hack';
 import RPGObject from 'hackforplay/object/object';
-import RPGMap from 'hackforplay/rpg-kit-map';
+import RPGMap from 'hackforplay/rpg-map';
 
 /**
 * RPGObject
