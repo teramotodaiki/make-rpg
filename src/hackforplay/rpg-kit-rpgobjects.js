@@ -1,8 +1,10 @@
+/* global BehaviorTypes, MapObject, random */
 import 'hackforplay/rpg-kit-main';
-import 'enchantjs/enchant';
+import enchant from 'enchantjs/enchant';
 import 'enchantjs/ui.enchant';
-import 'hackforplay/hack';
-import * as synonyms from './synonyms';
+import Hack from 'hackforplay/hack';
+import RPGObject from 'hackforplay/object/object';
+import RPGMap from 'hackforplay/rpg-kit-map';
 
 /**
 * RPGObject
@@ -257,7 +259,7 @@ Hack.assets.bat = function() {
 };
 Hack.assets.shadowMod = function() {
 	// shadow
-	this.shadow = this.shadow || new Sprite(32, 32);
+	this.shadow = this.shadow || new enchant.Sprite(32, 32);
 	this.shadow.ref = this;
 	this.shadow.layer = RPGMap.Layer.Shadow;
 	this.shadow.image = game.assets['enchantjs/shadow.gif'];
@@ -651,7 +653,7 @@ game.on('enterframe', function() {
 });
 
 function __physicsUpdateOnFrame(tick, frame, physics) {
-	physics.map(function(self, index) {
+	physics.map(function(self) {
 		// Physical Update
 		self.velocityX += self.accelerationX / frame;
 		self.velocityY += self.accelerationY / frame;
