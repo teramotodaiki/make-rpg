@@ -334,13 +334,16 @@ function putTrap(x, y) {
 	// 出現時に真上にプレイヤーがいた
 	if (player.mapX == x && player.mapY == y) {
 		player.damageTime = 30;
-		Hack.log("のった2");		
+		Hack.log("わなにかかった");	
+		player.stun();
 	}
 	
 	item2.on(('▼ イベント', 'のった'), () => {
 		item2.mod(('▼ スキン', _wわなかかった));
 		player.damageTime = 30;
-		Hack.log("のった");
+		Hack.log("わなにかかった");
+		player.stun();
+
 	});
 	return item2;
 }
