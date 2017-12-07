@@ -25,8 +25,8 @@ const common = () => {
 	};
 	Hack.menuGroup.addChild(resetButton);
 
-	// タイムオーバー
-	Hack.on('gameclear', () => {
+	// ゲーム終了（タイムアップかパーフェクト）
+	Hack.on('gameend', () => {
 		// 時間切れ！
 		kill();
 	});
@@ -78,6 +78,11 @@ const common = () => {
 		// scorechange のタイミングでシーンに追加する場合は enterframe を呼ばないと label が反映されない
 		scoreEffect.dispatchEvent(new Event('enterframe'));
 		Hack.world.addChild(scoreEffect);
+
+		if (Hack.score >= 1000) {
+			Hack.score = 1000;
+			Hack.gameclearPerfect();
+		}
 	});
 
 	// 魔道書に構文エラーがあったとき

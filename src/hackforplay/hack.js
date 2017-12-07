@@ -265,11 +265,25 @@ Hack.overlay = function() {
 		if (!playing) return;
 		playing = false;
 		Hack.dispatchEvent(new Event('gameclear'));
+		Hack.dispatchEvent(new Event('gameend'));
 	};
 	Hack.gameover = function() {
 		if (!playing) return;
 		playing = false;
-		Hack.dispatchEvent(new Event('gameover'));
+		Hack.dispatchEvent(new Event('gameend'));
+		Hack.dispatchEvent(new Event('gameend'));
+	};
+
+	// パーフェクト表示用のやつ
+	Hack.gameclearPerfect = function () {
+		if (!playing) return;
+		playing = false;
+		var lay = Hack.overlay('rgba(0,0,0,0.4)', 'resources/perfect');
+		lay.opacity = 0;
+		lay.moveTo(-game.rootScene.x, -game.rootScene.y);
+		lay.tl.fadeIn(30, enchant.Easing.LINEAR);
+		lay.tl.fadeIn(30, enchant.Easing.LINEAR);
+		Hack.dispatchEvent(new Event('gameend'));
 	};
 
 	// 初期値
