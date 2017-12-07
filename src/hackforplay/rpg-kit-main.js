@@ -206,6 +206,14 @@ MapObject.dictionary = {
 	energyBall: 44,
 	trap: 55,
 	usedTrap: 56,
+	wallButton: 125,
+	wallButtonPushed: 126,
+	wallButtonRed: 124,
+	floorButton: 130,
+	floorButtonPushed: 131,
+	displayNone: 127,
+	displayOK: 128,
+	displayArrow: 129,
 
 	// 新仕様公式定義
 	// clay: 320,
