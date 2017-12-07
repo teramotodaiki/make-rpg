@@ -21,7 +21,7 @@ const gap = 1;
 var coinArray = new Array();
 var trapArray = new Array();
 
-var danganTimer;
+var trapTimer;
 
 
 async function gameFunc() {
@@ -114,7 +114,6 @@ async function gameFunc() {
 		Hack.log('あたった');
 	};
 
-	feeles.setInterval(timerFunc, 2000);
 	feeles.setAlias('check', check, 'check() // 主人公の向いてる隣接マスに罠がでてるか否か\n');
 
 }
@@ -172,7 +171,7 @@ function resetMap() {
 	
 	const itemStairs2 = new RPGObject();
 	itemStairs2.mod(('▼ スキン', _kくだりかいだん));
-	itemStairs2.locate(1, 1, 'map1');
+	itemStairs2.locate(13, 1, 'map1');
 	itemStairs2.layer = RPGMap.Layer.Under;
 	itemStairs2.on(('▼ イベント', 'のった'), async () => {
 		// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
@@ -184,6 +183,8 @@ function resetMap() {
 		player.locate(startPlayerX, startPlayerY); // はじめの位置
 	});
 
+
+	putButton(2,7);
 	// setTraps(0);
 }
 
@@ -232,6 +233,19 @@ function timerFunc() {
 }
 
 
+function putButton(x, y) {
+	const itemButton = new RPGObject();
+	itemButton.mod(('▼ スキン', _kコイン));
+	itemButton.locate(x, y, 'map1');
+	itemButton.onplayerenter = () => {
+		itemButton.destroy();
+		Hack.log("トラップタイマー発動");
+		timerFunc();
+		trapTimer = feeles.setInterval(timerFunc, 2000);
+	};
+	return itemButton;
+}
+
 function putCoin(x, y) {
 	const itemCoin1 = new RPGObject();
 	itemCoin1.mod(('▼ スキン', _kコイン));
@@ -266,7 +280,7 @@ function putTrap(x, y) {
 
 Hack.onreset = function() {
 	resetMap();
-	feeles.clearInterval(danganTimer);
+	feeles.clearInterval(trapTimer);
 	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
 	// Hack.log をリセット
