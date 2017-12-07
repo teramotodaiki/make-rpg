@@ -1,5 +1,8 @@
+/* global feeles */
+import enchant from 'enchantjs/enchant';
 import 'hackforplay/enchantjs-kit';
 
+const game = enchant.Core.instance;
 
 function refocus() {
 	window.document.activeElement.blur(); // Blur an enchantBook
@@ -7,10 +10,7 @@ function refocus() {
 	window.focus(); // focus game
 }
 
-function getEditor() {
-	return Hack.enchantBook;
-}
-
+const Hack = window.Hack;
 module.exports = Hack;
 
 Hack.fun2str = function(func) {
@@ -222,14 +222,14 @@ Hack.overlay = function() {
 	return (function(args) {
 		// scope: createSprite()
 
-		this.image = new Surface(game.width, game.height);
+		this.image = new enchant.Surface(game.width, game.height);
 		for (var i = 0; i < args.length; i++) {
 			var fill = args[i];
 			switch (true) {
-			case fill instanceof Surface:
+			case fill instanceof enchant.Surface:
 				this.image.draw(fill, 0, 0, game.width, game.height);
 				break;
-			case game.assets[fill] instanceof Surface:
+			case game.assets[fill] instanceof enchant.Surface:
 				this.image.draw(game.assets[fill], 0, 0, game.width, game.height);
 				break;
 			default:
@@ -385,7 +385,7 @@ Hack.overlay = function() {
 
 		overlay.tl.fadeOut(6);
 
-		GUIParts.forEach(function(item, index) {
+		GUIParts.forEach(function(item) {
 			item.tl.fadeOut(8, enchant.Easing.BACK_EASEIN).and().moveTo(opener.x, opener.y, 8, enchant.Easing.BACK_EASEIN);
 			item.touchEnabled = false;
 		});
@@ -395,8 +395,8 @@ Hack.overlay = function() {
 	game.on('load', function() {
 
 		// 暗めのオーバーレイ
-		overlay = new Sprite(game.width, game.height);
-		overlay.image = new Surface(overlay.width, overlay.height);
+		overlay = new enchant.Sprite(game.width, game.height);
+		overlay.image = new enchant.Surface(overlay.width, overlay.height);
 		overlay.image.context.fillStyle = 'rgba(0,0,0,0.4)';
 		overlay.image.context.fillRect(0, 0, overlay.width, overlay.height);
 		overlay.touchEnabled = false;
@@ -543,7 +543,7 @@ game.addEventListener('load', function() {
  * @return [r, g, b]
  */
 (function() {
-	var ctx = new Surface(1, 1).context;
+	var ctx = new enchant.Surface(1, 1).context;
 	Hack.css2rgb = function(style) {
 		if (typeof style === 'string') {
 			ctx.fillStyle = style;
