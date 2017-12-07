@@ -15,7 +15,7 @@ game.preload(
 	'resources/magician_girl', 'resources/maps', 'resources/red_dragon', 
 	'resources/stop_button', 'resources/barrier', 'resources/reset_button', 
 	'resources/start_button', 'resources/next_button',
-	'resources/chant_effect', 'resources/timeup',
+	'resources/chant_effect', 'resources/stun_effect', 'resources/timeup',
 	'resources/start_message_01', 'resources/start_message_02', 'resources/start_message_03',
 	'resources/error_message'
 );

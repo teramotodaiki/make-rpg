@@ -33,6 +33,12 @@ feeles.setAlias = function(prefix, ref, completion) {
 export default function (code) {
 	// 魔道書の実行をフック
 
+	// いま eval が可能か
+	if (!isEnabled) {
+		console.error('今はコードが実行できない！');
+		return; // キャンセル
+	}
+
 	// 前回の Worker をとじる
 	kill();
 			
@@ -45,6 +51,12 @@ export default function (code) {
 	// 待機してからスタート
 	clearInterval(timerId);
 	timerId = feeles.setTimeout(() => {
+
+		// いま eval が可能か
+		if (!isEnabled) {
+			console.error('今はコードが実行できない！');
+			return; // キャンセル
+		}
 
 		if (Hack.isPlaying) {
 			// RUN!
@@ -130,4 +142,17 @@ export function kill () {
 		worker.terminate();
 		worker = null;			
 	}
+}
+
+// eval が可能かどうかを表すフラグ (read only)
+export let isEnabled = true;
+
+export function disable() {
+	isEnabled = false;	
+	// 前回の Worker をとじる
+	kill();
+}
+
+export function enable() {
+	isEnabled = true;	
 }

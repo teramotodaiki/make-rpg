@@ -522,6 +522,19 @@ Hack.assets.chantEffect = function() {
 	this.frame = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 };
 
+Hack.assets.damageEffect = function () {
+	this.image = game.assets['resources/stun_effect'];
+	this.width = 48;
+	this.height = 36;
+	this.offset = {
+		x: -12,
+		y: -18
+	}; 
+	this.directionType = 'single';
+	this.forward = [0, -1];
+	this.frame = [0, 1, 2, 3];
+};
+
 var __Effect = enchant.Class(RPGObject, {
 	initialize: function(velocityX, velocityY, lifetime, randomize) {
 		RPGObject.call(this, 32, 32, 0, 0);

@@ -2,7 +2,7 @@
 
 import enchant from 'enchantjs/enchant';
 import 'hackforplay/rpg-kit-main';
-import 'feeles/eval';
+import { isEnabled } from 'feeles/eval';
 
 // 1 フレームで走れる最大距離
 const DASH_STEP_LIMIT = 3;
@@ -13,7 +13,7 @@ const _player = new Promise((resolve, reject) => {
 		if (!window.player) {
 			reject(new Error('sequence.js: player is not found'));
 		}
-		resolve(window.player);
+		resolve(window.player);	
 	});
 });
 
@@ -59,6 +59,11 @@ export async function dash (num = 100) {
 		const { mapX, mapY, map } = player; // 移動前の値
 
 		walkWithoutAnimation(player); // ノーフレームで１マス進む
+
+		// Eval が不可能になった（何かにぶつかるなど）ら、ダッシュも途中でおわり
+		if (!isEnabled) {
+			break; // 終了
+		}
 
 		// 1 フレームで走れる最大距離に達したなら
 		if (!(moved % DASH_STEP_LIMIT)) {
