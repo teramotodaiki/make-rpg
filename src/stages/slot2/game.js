@@ -20,6 +20,10 @@ var kanban1Y = 3;
 var kanban2X = 6;
 var kanban2Y = 3;
 
+var slotAnswer1Array = [6, 5, 7, 8, 8, 4, 7, 7, 2, 2, 5, 8];
+var slotAnswer2Array = [5, 8, 1, 5, 6, 3, 1, 9, 4, 4, 9, 2];
+var slotCount = 0;
+
 async function gameFunc() {
 	resetMap();
 
@@ -144,8 +148,8 @@ function resetMap() {
 	Hack.changeMap('map1'); // map1 をロード		
 
 	// ちょっと特別に十の位は0以外にしてあげよう
- 	slotAnswer1 = Math.floor(Math.random()*10);
- 	slotAnswer2 = Math.floor(Math.random()*10);
+ 	slotAnswer1 = slotAnswer1Array[slotCount % slotAnswer1Array.length];
+ 	slotAnswer2 = slotAnswer2Array[slotCount % slotAnswer2Array.length];
 	putKanban(kanban1X, kanban1Y);
 	putKanban(kanban2X, kanban2Y);
 	putSlot1(kanban1X+1, kanban1Y);
@@ -205,6 +209,7 @@ function checkAnswer() {
 		itemStairs2.on(('▼ イベント', 'のった'), async () => {
 			// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
 			Hack.player.stop();
+			slotCount++;
 			await new Promise((resolve) => setTimeout(resolve, 100));
 			Hack.player.resume();
 			resetMap();
