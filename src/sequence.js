@@ -5,7 +5,7 @@ import 'hackforplay/rpg-kit-main';
 import { isEnabled } from 'feeles/eval';
 
 // 1 フレームで走れる最大距離
-const DASH_STEP_LIMIT = 3;
+const DASH_STEP_LIMIT = 1;
 
 // プレイヤーを非同期で取得
 const _player = new Promise((resolve, reject) => {
