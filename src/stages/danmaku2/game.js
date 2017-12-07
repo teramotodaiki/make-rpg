@@ -190,16 +190,6 @@ function resetMap() {
 	putButton(2,7);
 	// setTraps(0);
 
-	// コインを置きまくる
-	for (var i=4; i<=13; i++) {
-		const coin = putCoin(i, 7);
-		coinArray.push(coin);
-	}
-	for (var j=2; j<=6; j++) {
-		const coin = putCoin(13, j);
-		coinArray.push(coin);
-	}
-
 }
 
 function setTraps(pattern) {
@@ -307,6 +297,17 @@ function putButton(x, y) {
 	itemButton.onplayerenter = () => {
 		itemButton.destroy();
 		Hack.log("トラップタイマー発動");
+
+		// コインを置きまくる
+		for (var i=4; i<=13; i++) {
+			const coin = putCoin(i, 7);
+			coinArray.push(coin);
+		}
+		for (var j=2; j<=6; j++) {
+			const coin = putCoin(13, j);
+			coinArray.push(coin);
+		}
+
 		timerFunc();
 		trapTimer = feeles.setInterval(timerFunc, 2000);
 	};
