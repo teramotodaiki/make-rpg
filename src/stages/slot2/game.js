@@ -106,7 +106,7 @@ async function gameFunc() {
 	});
 
 	// 関数を登録する
-	feeles.setAlias('check', check, 'check() // 看板を読む\n');
+	feeles.setAlias('check', check, 'check()');
 }
 
 // トレーニング専用の関数を定義

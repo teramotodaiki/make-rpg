@@ -116,7 +116,7 @@ async function gameFunc() {
 		Hack.log('あたった');
 	};
 
-	feeles.setAlias('check', check, 'check() // 主人公の向いてる隣接マスに罠がでてるか否か\n');
+	feeles.setAlias('check', check, 'check()');
 
 }
 

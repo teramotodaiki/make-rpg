@@ -111,7 +111,7 @@ async function gameFunc() {
 	});
 
 	feeles.setTimeout(timerFunc, 1000);
-	feeles.setAlias('check', check, 'check() // 主人公の向いてる隣接マスにモグラがいるか否か\n');
+	feeles.setAlias('check', check, 'check()');
 
 }
 
