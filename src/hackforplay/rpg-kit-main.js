@@ -17,6 +17,7 @@ game.preload(
 	'resources/start_button', 'resources/next_button',
 	'resources/chant_effect', 'resources/stun_effect', 'resources/timeup',
 	'resources/start_message_01', 'resources/start_message_02', 'resources/start_message_03',
+	'resources/start_message_04', 'resources/start_message_05', 'resources/start_message_06',
 	'resources/error_message', 'resources/number_display', 'resources/mogura'
 );
 
