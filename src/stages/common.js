@@ -3,7 +3,7 @@
 
 import Hack from 'hackforplay/hack';
 import enchant, { Event } from 'enchantjs/enchant';
-import { kill } from 'feeles/eval';
+import { kill, enable } from 'feeles/eval';
 import 'mod/coordinate';
 import snippets from 'snippets';
 import addSnippet from 'addSnippet';
@@ -20,6 +20,8 @@ const common = () => {
 		Hack.dispatchEvent(new Event('reset'));
 		// リセットはストップをかねる
 		kill();
+		// 次のコードを実行可能にする
+		enable();
 	};
 	Hack.menuGroup.addChild(resetButton);
 
