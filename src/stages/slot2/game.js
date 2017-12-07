@@ -113,9 +113,11 @@ async function gameFunc() {
 async function check() {
 	console.log("a1:" + slotAnswer1 + ", a2:" + slotAnswer2);
 	if ((player.mapX == kanban1X) && (player.mapY == kanban1Y+1) && (player.forward.y == -1)) {
+		Hack.log(slotAnswer1 + "と書いてある");
 		return slotAnswer1;
 	} 
 	else if ((player.mapX == kanban2X) && (player.mapY == kanban2Y+1) && (player.forward.y == -1)) {
+		Hack.log(slotAnswer2 + "と書いてある");
 		return slotAnswer2;
 	}
 	else {

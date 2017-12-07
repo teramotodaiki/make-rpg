@@ -179,6 +179,7 @@ function resetMap() {
 		await new Promise((resolve) => setTimeout(resolve, 100));
 		Hack.player.resume();
 		resetMap();
+		feeles.clearInterval(trapTimer);
 		Hack.floorLabel.score++;
 		player.locate(startPlayerX, startPlayerY); // はじめの位置
 	});
