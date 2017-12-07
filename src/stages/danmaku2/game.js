@@ -4,7 +4,7 @@ import * as sequence from 'sequence';
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
  */
-var mCoinScore = 1;
+var mCoinScore = 20;
 var startPlayerX = 1;
 var startPlayerY = 7;
 

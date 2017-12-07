@@ -4,26 +4,33 @@ import * as sequence from 'sequence';
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
  */
-var mCoinScore = 1;
+var slotScore = 50;
 var coinArray = new Array();
 var trapArray = new Array();
 var trapFlag = false;
 var startPlayerX = 1;
-var startPlayerY = 4;
+var startPlayerY = 5;
 var slotNumber1 = 0;
 var slotNumber2 = 0;
 var slotAnswer1 = 0;
 var slotAnswer2 = 0;
 
+var stairsX = 13;
+var stairsY = 5;
+
 var kanban1X = 2;
-var kanban1Y = 3;
+var kanban1Y = 4;
 var kanban2X = 6;
-var kanban2Y = 3;
+var kanban2Y = 4;
 var inputX = 10;
 
 var slotAnswer1Array = [6, 5, 7, 8, 8, 4, 7, 7, 2, 2, 5, 8];
 var slotAnswer2Array = [5, 8, 1, 5, 6, 3, 1, 9, 4, 4, 9, 2];
 var slotCount = 0;
+
+var itemSlot1, buttonSlot1;
+var itemSlot2, buttonSlot2;
+var itemInput, buttonInput;
 
 async function gameFunc() {
 	resetMap();
@@ -133,16 +140,16 @@ async function check() {
 
 function resetMap() {
 	const map1 = Hack.createMap(`
-		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
+		102|101|101|101|101|101|101|101|101|101|101|101|101|101|102|
+		111|121|121|121|121|121|121|121|121|121|121|121|121|121|111|
+		111|121|121|121|121|121|121|121|121|121|121|121|121|121|111|
+		111|121|121|121|121|121|121|121|121|121|121|121|121|121|111|
+		111|120|122|120|120|120|122|120|120|120|120|120|120|120|111|
+		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
+		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
+		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
+		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
+		102|101|101|101|101|101|101|101|101|101|101|101|101|101|102|
 	`);
 	Hack.maps.map1 = map1;
 
@@ -151,8 +158,8 @@ function resetMap() {
 	// 乱数を生成
  	slotAnswer1 = slotAnswer1Array[slotCount % slotAnswer1Array.length];
  	slotAnswer2 = slotAnswer2Array[slotCount % slotAnswer2Array.length];
-	putKanban(kanban1X, kanban1Y);
-	putKanban(kanban2X, kanban2Y);
+	// putKanban(kanban1X, kanban1Y);
+	// putKanban(kanban2X, kanban2Y);
 	putSlot1(kanban1X+1, kanban1Y);
 	putSlot2(kanban2X+1, kanban2Y);
 	putInput(inputX, kanban1Y);
@@ -170,17 +177,22 @@ function putKanban(x, y) {
 function putInput(x, y) {
 	itemInput = new RPGObject();
 	itemInput.mod(('▼ スキン', Hack.assets.displayNone));
-	itemInput.locate(x, y, 'map1');
+	itemInput.locate(x, y-1, 'map1');
+
+	buttonInput = new RPGObject();
+	buttonInput.mod(('▼ スキン', Hack.assets.wallButton));
+	buttonInput.locate(x, y, 'map1');
+
 	itemInput.on(('▼ イベント', 'こうげきされた'), () => {
 		if ((slotNumber1 == slotAnswer1) && (slotNumber2 == slotAnswer2)) {
 			itemInput.pressed = true;
 			itemInput.mod(('▼ スキン', Hack.assets.displayArrow));
-
-			Hack.score+=100;
+			buttonInput.mod(('▼ スキン', Hack.assets.wallButtonPushed));
+			Hack.score+=slotScore;
 
 			const itemStairs2 = new RPGObject();
 			itemStairs2.mod(('▼ スキン', _kくだりかいだん));
-			itemStairs2.locate(13, 4, 'map1');
+			itemStairs2.locate(stairsX, stairsY, 'map1');
 			itemStairs2.layer = RPGMap.Layer.Under;
 			itemStairs2.on(('▼ イベント', 'のった'), async () => {
 				// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
@@ -197,14 +209,15 @@ function putInput(x, y) {
 	itemInput.pressed = false;
 }
 
-var itemSlot1;
-var itemSlot2;
-var itemInput;
-
 function putSlot1(x, y) {
 	itemSlot1 = new RPGObject();
 	itemSlot1.mod(('▼ スキン', Hack.assets.slot));
-	itemSlot1.locate(x, y, 'map1');
+	itemSlot1.locate(x, y-1, 'map1');
+	slotNumber1 = 0;
+
+	buttonSlot1 = new RPGObject();
+	buttonSlot1.mod(('▼ スキン', Hack.assets.wallButtonRed));
+	buttonSlot1.locate(x, y, 'map1');
 	slotNumber1 = 0;
 
 	itemSlot1.on(('▼ イベント', 'こうげきされた'), () => {
@@ -214,14 +227,18 @@ function putSlot1(x, y) {
 		}
 		itemSlot1.frame = slotNumber1;
 		checkAnswer();
-		// Hack.log((slotNumber1*10 + slotNumber2));
 	});
 }
 
 function putSlot2(x, y) {
 	itemSlot2 = new RPGObject();
 	itemSlot2.mod(('▼ スキン', Hack.assets.slot));
-	itemSlot2.locate(x, y, 'map1');
+	itemSlot2.locate(x, y-1, 'map1');
+	slotNumber2 = 0;
+
+	buttonSlot2 = new RPGObject();
+	buttonSlot2.mod(('▼ スキン', Hack.assets.wallButtonRed));
+	buttonSlot2.locate(x, y, 'map1');
 	slotNumber2 = 0;
 
 	itemSlot2.on(('▼ イベント', 'こうげきされた'), () => {
@@ -231,7 +248,6 @@ function putSlot2(x, y) {
 		}
 		itemSlot2.frame = slotNumber2;
 		checkAnswer();
-		// Hack.log((slotNumber1*10 + slotNumber2));
 	});
 }
 
