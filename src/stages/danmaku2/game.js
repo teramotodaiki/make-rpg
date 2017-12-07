@@ -245,20 +245,18 @@ function putCoin(x, y) {
 
 function putTrap(x, y) {
 	const item2 = new RPGObject();
-	item2.mod(('▼ スキン', _wわな));
+	item2.mod(('▼ スキン', _wわなかかった));
 	item2.locate(x, y, 'map1');
 	item2.layer = RPGMap.Layer.Under;
 
 	// 出現時に真上にプレイヤーがいた
 	if (player.mapX == x && player.mapY == y) {
-		player.hp -= 1;
 		player.damageTime = 30;
 		Hack.log("のった2");		
 	}
 	
 	item2.on(('▼ イベント', 'のった'), () => {
-		item2.mod(('▼ スキン', _tつぼ));
-		player.hp -= 1;
+		item2.mod(('▼ スキン', _wわなかかった));
 		player.damageTime = 30;
 		Hack.log("のった");
 	});
