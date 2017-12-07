@@ -40,7 +40,7 @@ export default [
 		prefix: 'locate',
 		text: 'locate(7, 5) // しゅんかんいどう\n'
 	},
-	/* ループ (策定中) */
+	/* ループ */
 	{
 		prefix: 'for',
 		text: `
@@ -51,23 +51,21 @@ for (let かず = 0; かず < 10; かず++) {
 `
 	},
 	{
-		prefix: 'forfor',
+		prefix: 'while',
 		text: `
-// くりかえす を くりかえす
-for (let よこ = 0; よこ < 10; よこ += 1) {
-	// くりかえす
-	for (let たて = 0; たて < 5; たて += 1) {
+// check が 0 の間ずっとくりかえす
+while (check() === 0) {
 
-	}
 }
 `
 	},
+	/* 分岐 */
 	{
-		prefix: 'forof',
+		prefix: 'if',
 		text: `
-// ひとつずつ とりだす
-for (const かず of [0, 1, 2, 3, 4, 5]) {
-
+// check が 1 のときだけ中に入る
+if (check() === 1) {
+	
 }
 `
 	}
