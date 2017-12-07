@@ -9,10 +9,21 @@ var coinArray = new Array();
 var trapArray = new Array();
 var trapFlag = false;
 var startPlayerX = 1;
-var startPlayerY = 2;
+var startPlayerY = 4;
 var slotNumber1 = 0;
 var slotNumber2 = 0;
-var slotAnswer = 21;
+var slotAnswer1 = 0;
+var slotAnswer2 = 0;
+
+var kanban1X = 2;
+var kanban1Y = 3;
+var kanban2X = 6;
+var kanban2Y = 3;
+var inputX = 10;
+
+var slotAnswer1Array = [6, 5, 7, 8, 8, 4, 7, 7, 2, 2, 5, 8];
+var slotAnswer2Array = [5, 8, 1, 5, 6, 3, 1, 9, 4, 4, 9, 2];
+var slotCount = 0;
 
 async function gameFunc() {
 	resetMap();
@@ -48,20 +59,6 @@ async function gameFunc() {
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
-	// const startButton = new enchant.Sprite(120, 32);
-	// startButton.image = game.assets['resources/start_button'];
-	// startButton.moveTo(180, 220);
-	// Hack.menuGroup.addChild(startButton);
-	// startButton.ontouchstart = () => {
-	// 	Hack.menuGroup.removeChild(description);
-	// 	Hack.menuGroup.removeChild(startButton);
-	// 	// タイマー開始
-	// 	Hack.startTimer();
-
-	// 	// 魔道書のコードをひらく
-	// 	feeles.openCode('stages/slot/code.js');
-	// };
-
 	// 説明画面（作戦タイム）のタイマー => ゲームスタート
 	const strategyTimer = new enchant.ui.MutableText(352, 8);
 	const limit = Date.now() + window.STRATEGY_TIME;
@@ -76,7 +73,7 @@ async function gameFunc() {
 			Hack.startTimer();
 		
 			// 魔道書のコードをひらく
-			feeles.openCode('stages/slot/code.js');
+			feeles.openCode('stages/slot2/code.js');
 			
 			// 削除
 			Hack.menuGroup.removeChild(strategyTimer);
@@ -113,22 +110,33 @@ async function gameFunc() {
 		}, 4000);
 	});
 
-
-	// トレーニング専用の関数を定義
-	async function readKanban() {
-		return slotAnswer;
-	}
 	// 関数を登録する
-	feeles.setAlias('readKanban', readKanban, 'readKanban() // 看板を読む\n');
+	feeles.setAlias('check', check, 'check()');
+}
+
+// 看板を読む関数
+async function check() {
+	console.log("a1:" + slotAnswer1 + ", a2:" + slotAnswer2);
+	if ((player.mapX == kanban1X) && (player.mapY == kanban1Y+1) && (player.forward.y == -1)) {
+		Hack.log(slotAnswer1 + "と書いてある");
+		return slotAnswer1;
+	} 
+	else if ((player.mapX == kanban2X) && (player.mapY == kanban2Y+1) && (player.forward.y == -1)) {
+		Hack.log(slotAnswer2 + "と書いてある");
+		return slotAnswer2;
+	}
+	else {
+		return -1;
+	}
 
 }
 
 function resetMap() {
 	const map1 = Hack.createMap(`
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
+		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
+		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
+		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
@@ -140,11 +148,14 @@ function resetMap() {
 
 	Hack.changeMap('map1'); // map1 をロード		
 
-	// ちょっと特別に十の位は0以外にしてあげよう
- 	slotAnswer = Math.floor(Math.random()*89) + 10;
-	putKanban(7, 3);
-	putSlot1(5, 5);
-	putSlot2(9, 5);
+	// 乱数を生成
+ 	slotAnswer1 = slotAnswer1Array[slotCount % slotAnswer1Array.length];
+ 	slotAnswer2 = slotAnswer2Array[slotCount % slotAnswer2Array.length];
+	putKanban(kanban1X, kanban1Y);
+	putKanban(kanban2X, kanban2Y);
+	putSlot1(kanban1X+1, kanban1Y);
+	putSlot2(kanban2X+1, kanban2Y);
+	putInput(inputX, kanban1Y);
 }
 
 function putKanban(x, y) {
@@ -156,56 +167,81 @@ function putKanban(x, y) {
 	});
 }
 
+function putInput(x, y) {
+	itemInput = new RPGObject();
+	itemInput.mod(('▼ スキン', Hack.assets.displayNone));
+	itemInput.locate(x, y, 'map1');
+	itemInput.on(('▼ イベント', 'こうげきされた'), () => {
+		if ((slotNumber1 == slotAnswer1) && (slotNumber2 == slotAnswer2)) {
+			itemInput.pressed = true;
+			itemInput.mod(('▼ スキン', Hack.assets.displayArrow));
+
+			Hack.score+=100;
+
+			const itemStairs2 = new RPGObject();
+			itemStairs2.mod(('▼ スキン', _kくだりかいだん));
+			itemStairs2.locate(13, 4, 'map1');
+			itemStairs2.layer = RPGMap.Layer.Under;
+			itemStairs2.on(('▼ イベント', 'のった'), async () => {
+				// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
+				Hack.player.stop();
+				slotCount++;
+				await new Promise((resolve) => setTimeout(resolve, 100));
+				Hack.player.resume();
+				resetMap();
+				Hack.floorLabel.score++;
+				player.locate(startPlayerX, startPlayerY); // はじめの位置
+			});
+		}
+	});
+	itemInput.pressed = false;
+}
+
 var itemSlot1;
 var itemSlot2;
+var itemInput;
 
 function putSlot1(x, y) {
 	itemSlot1 = new RPGObject();
-	itemSlot1.mod(('▼ スキン', _tたからばこひらいた));
+	itemSlot1.mod(('▼ スキン', Hack.assets.slot));
 	itemSlot1.locate(x, y, 'map1');
+	slotNumber1 = 0;
+
 	itemSlot1.on(('▼ イベント', 'こうげきされた'), () => {
 		slotNumber1++;
 		if (slotNumber1==10) {
 			slotNumber1 = 0;
 		}
+		itemSlot1.frame = slotNumber1;
 		checkAnswer();
-		Hack.log((slotNumber1*10 + slotNumber2));
+		// Hack.log((slotNumber1*10 + slotNumber2));
 	});
 }
 
 function putSlot2(x, y) {
 	itemSlot2 = new RPGObject();
-	itemSlot2.mod(('▼ スキン', _tたからばこひらいた));
+	itemSlot2.mod(('▼ スキン', Hack.assets.slot));
 	itemSlot2.locate(x, y, 'map1');
+	slotNumber2 = 0;
+
 	itemSlot2.on(('▼ イベント', 'こうげきされた'), () => {
 		slotNumber2++;
 		if (slotNumber2==10) {
 			slotNumber2 = 0;
 		}
+		itemSlot2.frame = slotNumber2;
 		checkAnswer();
-		Hack.log((slotNumber1*10 + slotNumber2));
+		// Hack.log((slotNumber1*10 + slotNumber2));
 	});
 }
 
 function checkAnswer() {
-	if ((slotNumber1*10 + slotNumber2) == slotAnswer) {
-		Hack.score+=100;
-		itemSlot1.destroy();
-		itemSlot2.destroy();
-
-		const itemStairs2 = new RPGObject();
-		itemStairs2.mod(('▼ スキン', _kくだりかいだん));
-		itemStairs2.locate(13, 8, 'map1');
-		itemStairs2.layer = RPGMap.Layer.Under;
-		itemStairs2.on(('▼ イベント', 'のった'), async () => {
-			// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
-			Hack.player.stop();
-			await new Promise((resolve) => setTimeout(resolve, 100));
-			Hack.player.resume();
-			resetMap();
-			Hack.floorLabel.score++;
-			player.locate(startPlayerX, startPlayerY); // はじめの位置
-		});
+	if (!itemInput.pressed) {
+		if ((slotNumber1 == slotAnswer1) && (slotNumber2 == slotAnswer2)) {
+			itemInput.mod(('▼ スキン', Hack.assets.displayOK));
+		} else {
+			itemInput.mod(('▼ スキン', Hack.assets.displayNone));		
+		}
 	}
 }
 

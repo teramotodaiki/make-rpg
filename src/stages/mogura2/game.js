@@ -73,7 +73,7 @@ async function gameFunc() {
 			Hack.startTimer();
 		
 			// 魔道書のコードをひらく
-			feeles.openCode('stages/mogura/code.js');
+			feeles.openCode('stages/mogura2/code.js');
 			
 			// 削除
 			Hack.menuGroup.removeChild(strategyTimer);
@@ -110,7 +110,8 @@ async function gameFunc() {
 		}, 4000);
 	});
 
-	feeles.setInterval(timerFunc, 100);
+	feeles.setTimeout(timerFunc, 1000);
+	feeles.setAlias('check', check, 'check()');
 
 }
 
@@ -122,7 +123,7 @@ function resetMap() {
 		10|00 00 05 00 05 00 05 00 05 00 05 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
-		10|00 00 05 00 05 00 05 00 05 00 05 00 00 10|
+		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|00 00 00 00 00 00 00 00 00 00 00 00 00 10|
 		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
@@ -130,62 +131,94 @@ function resetMap() {
 	Hack.maps.map1 = map1;
 
 	Hack.changeMap('map1'); // map1 をロード		
+
+	putRock(4,3);
+	putRock(6,6);
 }
 
 var timerCount = 0;
+var itemMogura;
+var moguraX = 1;
+var moguraY = 0;
+
 function timerFunc() {
-	timerCount++;
-	switch(timerCount) {
-	case 10:
-		moguraOn(3,3);
-		break;
-	case 30:	
-		moguraOff();
-		break;
-	case 40:
-		moguraOn(5,3);
-		break;
-	case 60:	
-		moguraOff();
-		break;
-	case 70:
-		moguraOn(7,3);
-		break;
-	case 90:	
-		moguraOff();
-		break;
-	case 100:
-		moguraOn(9,3);
-		break;
-	case 120:	
-		moguraOff();
-		break;
-	case 130:
-		moguraOn(11,3);
-		break;
-	case 150:	
-		moguraOff();
-		timerCount = 0;
-		break;
-	}
+	moguraX+=2;
+	if (moguraX>11) {
+		moguraX = 3;
+	} 
+	moguraY = 3;
+	moguraOn(moguraX, moguraY);
 }
 
-var itemMogura;
+
 function moguraOn(x, y) {
 	itemMogura = new RPGObject();
 	itemMogura.mod(('▼ スキン', _tつぼ));
 	itemMogura.locate(x, y, 'map1');
+
 	itemMogura.layer = RPGMap.Layer.Under;
+	itemMogura.onこうげきされた = () => {
+		itemMogura.destroy();
+		Hack.score += 10;
+		feeles.setTimeout(timerFunc, 1000);
+	};
 }
 
-function moguraOff() {
-	itemMogura.destroy();
+async function check() {
+	if (itemMogura.parentNode === null) {
+		return 0;
+	}
+	// 右向き
+	if (player.forward.x == 1) {
+		if ((moguraX == player.mapX+1) && (moguraY == player.mapY)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	} 
+	// 左向き
+	else if (player.forward.x == -1) {
+		if ((moguraX == player.mapX-1) && (moguraY == player.mapY)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	// 下向き
+	else if (player.forward.y == 1) {
+		if ((moguraX == player.mapX) && (moguraY == player.mapY+1)) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+	// 上向き
+	else if (player.forward.y == -1) {
+		if ((moguraX == player.mapX) && (moguraY == player.mapY-1)) {
+			return 1;
+		} else {
+			return 0;
+		}	
+	}
+}
+
+function putRock(x, y ) {
+	const item6 = new RPGObject();
+	item6.mod(('▼ スキン', _iいしかべ));
+	item6.locate(x, y, 'map1');
+	item6.on(('▼ イベント', 'こうげきされた'), () => {
+	});
 }
 
 Hack.onreset = function() {
 	resetMap();
 	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
+
+	itemMogura.destroy();
+	moguraX = 1;
+	moguraY = 0;
+	feeles.setTimeout(timerFunc, 1000);
 };
 
 export default gameFunc;
