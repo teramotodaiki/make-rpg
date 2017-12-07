@@ -1,8 +1,11 @@
+/* global feeles, BehaviorTypes, random */
+import enchant from 'enchantjs/enchant';
 import 'hackforplay/enchantjs-kit';
 import 'mod/stop';
 
-import 'hackforplay/hack';
-import 'hackforplay/rpg-kit-rpgobjects';
+import Hack from 'hackforplay/hack';
+import RPGObject from 'hackforplay/rpg-kit-rpgobjects';
+import MapObject from 'hackforplay/rpg-map';
 import 'hackforplay/rpg-kit-color';
 
 const game = enchant.Core.instance;
@@ -12,9 +15,9 @@ game.preload(
 	'resources/magician_girl', 'resources/maps', 'resources/red_dragon', 
 	'resources/stop_button', 'resources/barrier', 'resources/reset_button', 
 	'resources/start_button', 'resources/next_button',
-	'resources/chant_effect', 'resources/timeup',
+	'resources/chant_effect', 'resources/stun_effect', 'resources/timeup',
 	'resources/start_message_01', 'resources/start_message_02', 'resources/start_message_03',
-	'resources/error_message'
+	'resources/error_message', 'resources/number_display'
 );
 
 // 旧
@@ -32,7 +35,7 @@ Hack.on('load', function() {
 		Object.defineProperty(Hack.maps, 'next', {
 			get: function() {
 				var next = null;
-				Object.keys(Hack.maps).reduce(function(previousKey, currentKey, index) {
+				Object.keys(Hack.maps).reduce(function(previousKey, currentKey) {
 					next = Hack.map === Hack.maps[previousKey] ? currentKey : next;
 				});
 				return next;
@@ -66,8 +69,6 @@ Hack.on('load', function() {
 import { Group } from 'enchantjs/enchant';
 import Camera from 'hackforplay/camera';
 
-
-import { CanvasRenderer } from 'enchantjs/enchant';
 
 game.on('awake', () => {
 
@@ -149,7 +150,7 @@ game.on('awake', () => {
 			Hack.openEditor();
 		}
 	});
-	Hack.onhintset = function(event) {
+	Hack.onhintset = function() {
 		Hack.enchantBookIcon.visible = true;
 	};
 
@@ -167,7 +168,7 @@ game.on('awake', () => {
 		});
 		Hack.menuGroup.addChild(self);
 		return self;
-	})(new ScoreLabel(Hack.menuGroup.x + 10, Hack.menuGroup.y + 88), Hack.scoreLabel);
+	})(new enchant.ui.ScoreLabel(Hack.menuGroup.x + 10, Hack.menuGroup.y + 88), Hack.scoreLabel);
 
 	feeles.setAlias('Hack', Hack);
 	feeles.setAlias('game', game);
@@ -205,6 +206,14 @@ MapObject.dictionary = {
 	energyBall: 44,
 	trap: 55,
 	usedTrap: 56,
+	wallButton: 125,
+	wallButtonPushed: 126,
+	wallButtonRed: 124,
+	floorButton: 130,
+	floorButtonPushed: 131,
+	displayNone: 127,
+	displayOK: 128,
+	displayArrow: 129,
 
 	// 新仕様公式定義
 	// clay: 320,
@@ -280,7 +289,7 @@ function tryFetchMapImage(name) {
 		var frame = MapObject.dictionary[name],
 			x = (frame % length) * w,
 			y = ((frame / length) >> 0) * h;
-		var s = new Surface(w, h);
+		var s = new enchant.Surface(w, h);
 		s.draw(game.assets['resources/maps'], x, y, w, h, 0, 0, w, h);
 		return MapObject.surfaces[name] = s;
 	}
@@ -329,7 +338,7 @@ Hack.createMap = function(template) {
 	}
 	var source = template.split('\n')
 		.map(function(line) {
-			return line.match(/\s*\d+[\s\|]?/g);
+			return line.match(/\s*\d+[\s|]?/g);
 		})
 		.filter(function(line) {
 			return Array.isArray(line);
@@ -440,7 +449,7 @@ Hack.Vec2Dir = function(vec) {
 	return 1; // left
 };
 
-Hack.Attack = function(x, y, damage, pushX, pushY) {
+Hack.Attack = function(x, y, damage/*, pushX, pushY*/) {
 	RPGObject.collection.filter(function(item) {
 		return item.mapX === x && item.mapY === y && item !== this;
 	}, this).forEach(function(item) {

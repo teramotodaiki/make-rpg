@@ -1,8 +1,10 @@
+/* global BehaviorTypes, MapObject, random */
 import 'hackforplay/rpg-kit-main';
-import 'enchantjs/enchant';
+import enchant from 'enchantjs/enchant';
 import 'enchantjs/ui.enchant';
-import 'hackforplay/hack';
-import * as synonyms from './synonyms';
+import Hack from 'hackforplay/hack';
+import RPGObject from 'hackforplay/object/object';
+import RPGMap from 'hackforplay/rpg-map';
 
 /**
 * RPGObject
@@ -257,7 +259,7 @@ Hack.assets.bat = function() {
 };
 Hack.assets.shadowMod = function() {
 	// shadow
-	this.shadow = this.shadow || new Sprite(32, 32);
+	this.shadow = this.shadow || new enchant.Sprite(32, 32);
 	this.shadow.ref = this;
 	this.shadow.layer = RPGMap.Layer.Shadow;
 	this.shadow.image = game.assets['enchantjs/shadow.gif'];
@@ -520,6 +522,32 @@ Hack.assets.chantEffect = function() {
 	this.frame = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 };
 
+Hack.assets.damageEffect = function () {
+	this.image = game.assets['resources/stun_effect'];
+	this.width = 48;
+	this.height = 36;
+	this.offset = {
+		x: -12,
+		y: -18
+	}; 
+	this.directionType = 'single';
+	this.forward = [0, -1];
+	this.frame = [0, 1, 2, 3];
+};
+
+Hack.assets.slot = function () {
+	this.image = game.assets['resources/number_display'];
+	this.width = 32;
+	this.height = 64;
+	this.offset = {
+		x: 0,
+		y: 0
+	}; 
+	this.directionType = 'single';
+	this.forward = [0, -1];
+	this.frame = 0;	
+};
+
 var __Effect = enchant.Class(RPGObject, {
 	initialize: function(velocityX, velocityY, lifetime, randomize) {
 		RPGObject.call(this, 32, 32, 0, 0);
@@ -651,7 +679,7 @@ game.on('enterframe', function() {
 });
 
 function __physicsUpdateOnFrame(tick, frame, physics) {
-	physics.map(function(self, index) {
+	physics.map(function(self) {
 		// Physical Update
 		self.velocityX += self.accelerationX / frame;
 		self.velocityY += self.accelerationY / frame;

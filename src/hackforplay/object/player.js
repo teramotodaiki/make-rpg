@@ -1,6 +1,8 @@
 import enchant from 'enchantjs/enchant';
 import RPGObject from './object';
 import Key from 'mod/key';
+import Hack from 'hackforplay/hack';
+import { disable } from 'feeles/eval';
 
 // プレイヤーの入力をできなくするフラグ
 window.NO_INPUT = true;
@@ -69,6 +71,30 @@ class Player extends RPGObject {
 
 	}
 
+	/**
+	 * プレイヤーをスタン状態にさせる（プロコロ独自処理）
+	 */
+	stun() {
+		// コードの実行を止める・実行不可能にする
+		disable();
+
+		if (!this._stunEffect) {
+			// ダメージエフェクトを作成
+			this._stunEffect = new enchant.Sprite(48, 32);
+			// スタンの見た目
+			Hack.assets.damageEffect.call(this._stunEffect);
+			// プレイヤーの位置に追従
+			this._stunEffect.onenterframe = () => {
+				this._stunEffect.moveTo(this.x, this.y);
+				this._stunEffect.moveBy(-this.offset.x, -this.offset.y);
+				this._stunEffect.moveBy(this._stunEffect.offset.x, this._stunEffect.offset.y);
+			};
+		}
+		if (!this._stunEffect.scene) {
+			// エフェクトを表示（リセットすると消える）
+			Hack.defaultParentNode.addChild(this._stunEffect);
+		}
+	}
 
 	enterCheck() {
 		// Dispatch playerenter Event
