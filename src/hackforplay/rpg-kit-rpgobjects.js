@@ -541,7 +541,7 @@ Hack.assets.slot = function () {
 	this.height = 64;
 	this.offset = {
 		x: 0,
-		y: 0
+		y: -32
 	}; 
 	this.directionType = 'single';
 	this.forward = [0, -1];

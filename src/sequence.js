@@ -141,10 +141,6 @@ const walkWithoutAnimation = player => {
 	const tx = Hack.map.tileNumX;
 	const ty = Hack.map.tileNumY;
 
-	// 画面外
-	if (nextX < 0 || nextX >= tx || nextY < 0 || nextY >= ty) {
-		return; // 画面外なら歩かない
-	}
 
 	// タイルのサイズ
 	const tw = Hack.map.tileWidth;
@@ -153,7 +149,12 @@ const walkWithoutAnimation = player => {
 	// 移動先
 	const nextX = player.mapX + player.forward.x;
 	const nextY = player.mapY + player.forward.y;
-		
+
+	// 画面外
+	if (nextX < 0 || nextX >= tx || nextY < 0 || nextY >= ty) {
+		return; // 画面外なら歩かない
+	}
+
 	// マップの当たり判定
 	if (Hack.map.hitTest(nextX * tw, nextY * th)) {
 		return;
