@@ -535,6 +535,19 @@ Hack.assets.damageEffect = function () {
 	this.frame = [0, 1, 2, 3];
 };
 
+Hack.assets.slot = function () {
+	this.image = game.assets['resources/number_display'];
+	this.width = 32;
+	this.height = 64;
+	this.offset = {
+		x: 0,
+		y: 0
+	}; 
+	this.directionType = 'single';
+	this.forward = [0, -1];
+	this.frame = 0;	
+};
+
 var __Effect = enchant.Class(RPGObject, {
 	initialize: function(velocityX, velocityY, lifetime, randomize) {
 		RPGObject.call(this, 32, 32, 0, 0);
