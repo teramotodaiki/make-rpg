@@ -5,7 +5,6 @@ const snippets = [];
 const sendCompletion = () => {
 	// 必要な入力補完の情報をエディタに送る
 	feeles.connected.then(({ port }) => {
-		console.log(snippets);
 		port.postMessage({
 			// id: getUniqueId(),
 			query: 'complete',
