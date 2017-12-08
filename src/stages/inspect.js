@@ -5,7 +5,7 @@ const state = {
 	// 残り時間（秒）
 	last: 0,
 	// check() の結果の数値
-	result: 0
+	result: null
 };
 
 // スコア (HTML)
@@ -15,9 +15,13 @@ div.style.bottom = 0;
 div.style.height = '150px';
 div.style.fontSize = '32px';
 div.style.fontWeight = 'bold';
-div.style.backgroundColor = 'white';
+div.style.color = 'white';
 div.style.width = '100%';
-document.body.appendChild(div);
+
+feeles.fetch('resources/background.png')
+	.then(response => response.blob())
+	.then(blob => div.style.backgroundImage = `url(${URL.createObjectURL(blob)})`)
+	.then(() => document.body.appendChild(div));
 
 function inspect(nextState) {
 	// state に上書き
@@ -27,9 +31,9 @@ function inspect(nextState) {
 	const min = Math.floor(state.last / 60);
 	const sec = state.last % 60;
 	div.innerHTML = `
+	のこり：${min > 0 ? `${min} 分 ` : ''}${sec} 秒<br />
 	スコア：${state.score} 点<br />
-	のこり：${min > 0 ? `${min} 分` : ''}${sec} 秒<br />
-	けっか：${state.result}`;
+	${state.result === null ? '' : `けっか：${state.result}`}`;
 }
 
 export default inspect;
