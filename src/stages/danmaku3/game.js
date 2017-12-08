@@ -17,10 +17,13 @@ const quoteLength = 320 + 32; // スプライトが完全に隠れるまで
 // 隣のレーンとの位相差 [sec]
 const gap = 1;
 
+var trapTotalNumber = 3;
 
 var coinArray = new Array();
 var coinArray0 = new Array();
 var coinArray1 = new Array();
+var coinArray2 = new Array();
+
 var trapArray = new Array();
 
 var trapTimer;
@@ -74,7 +77,7 @@ async function gameFunc() {
 			Hack.startTimer();
 		
 			// 魔道書のコードをひらく
-			feeles.openCode('stages/danmaku2/code.js');
+			feeles.openCode('stages/danmaku3/code.js');
 			
 			// 削除
 			Hack.menuGroup.removeChild(strategyTimer);
@@ -157,7 +160,7 @@ function resetMap() {
 
 	const map1 = Hack.createMap(`
 		51|51|51|51|51|51|51|51|51|51|51|51|51|51|51|
-		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
+		52|54 54 54 03 03 03 03 03 03 03 03 03 03 52|
 		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
 		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
 		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
@@ -205,17 +208,13 @@ function setTraps(pattern) {
 	switch(pattern) {
 		case 0: {
 			// coin復活
-			if (coinArray1.length>1) {
-				for (var i=0; i<coinArray1.length; i++) {
-					// var coinX = coinArray1[i].x;
-					// var coinY = coinArray1[i].y;
-					// const coin = putCoin(coinX, coinY);
-					// // coinArray.push(coin);
-					coinArray1[i].mod(('▼ スキン', _kコイン));
+			if (coinArray2.length>1) {
+				for (var i=0; i<coinArray2.length; i++) {
+					coinArray2[i].mod(('▼ スキン', _kコイン));
 				}
 			}
 			// トラップ出す
-			for (var i=-10; i<=4; i+=4) {
+			for (var i=-8; i<=4; i+=3) {
 				for (var k=0; k<=14; k++) {
 					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
 						const trap = putTrap(k,i+k);
@@ -244,17 +243,12 @@ function setTraps(pattern) {
 			// coin復活
 			if (coinArray0.length>1) {
 				for (var i=0; i<coinArray0.length; i++) {
-					// var coinX = coinArray0[i].x;
-					// var coinY = coinArray0[i].y;
-					// console.log("coin復活" + coinX+"," + coinY);
-					// const coin = putCoin(coinX, coinY);
-					// coinArray.push(coin);
 					coinArray0[i].mod(('▼ スキン', _kコイン));
 				}
 			}
 
 			// トラップ出す
-			for (var i=-12; i<=4; i+=4) {
+			for (var i=-9; i<=4; i+=3) {
 				for (var k=0; k<=14; k++) {
 					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
 						const trap = putTrap(k,i+k);
@@ -280,12 +274,47 @@ function setTraps(pattern) {
 			}
 			break;
 		}
+		case 2: {
+			// coin復活
+			if (coinArray1.length>1) {
+				for (var i=0; i<coinArray1.length; i++) {
+					coinArray1[i].mod(('▼ スキン', _kコイン));
+				}
+			}
+
+			// トラップ出す
+			for (var i=-10; i<=4; i+=3) {
+				for (var k=0; k<=14; k++) {
+					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
+						const trap = putTrap(k,i+k);
+						trapArray.push(trap);					
+
+						// トラップの上にコインがあったら一旦消してスタックする
+						if (coinArray.length>1) {
+							for(var l=0; l<coinArray.length; l++) {
+								var coinX = coinArray[l].mapX;
+								var coinY = coinArray[l].mapY;
+								if (coinX == k && coinY == (i+k)) {
+									// coinArray1.push(new Point(coinX, coinY));
+									// // coinArray[l].destroy();
+									coinArray2.push(coinArray[l]);
+
+									coinArray[l].mod(('▼ スキン', _wわなかかった));
+
+								}
+							}
+						}		
+					}
+				}
+			}
+			break;
+		}
 	}
 }
 
 var trapCount=0;
 function timerFunc() {
-	setTraps(trapCount%2);
+	setTraps(trapCount%trapTotalNumber);
 	trapCount++;
 }
 
