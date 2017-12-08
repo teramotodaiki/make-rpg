@@ -69,7 +69,7 @@ async function gameFunc() {
 			Hack.startTimer();
 		
 			// 魔道書のコードをひらく
-			feeles.openCode('stages/1/code.js');
+			feeles.openCode('stages/semi1/code.js');
 			
 			// 削除
 			Hack.menuGroup.removeChild(strategyTimer);
