@@ -139,6 +139,9 @@ function resetMap() {
 	putRock(10,7);
 	putRock(11,7);
 	putRock(12,7);
+	putRock(2,5);
+	putRock(3,6);
+	putRock(3,7);
 
 	putNumber(3,3, '1');
 	putNumber(5,3, '2');
