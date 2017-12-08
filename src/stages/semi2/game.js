@@ -55,7 +55,7 @@ async function gameFunc() {
 			Hack.startTimer();
 		
 			// 魔道書のコードをひらく
-			feeles.openCode('stages/danmaku/code.js');
+			feeles.openCode('stages/semi2/code.js');
 			
 			// 削除
 			Hack.menuGroup.removeChild(strategyTimer);
