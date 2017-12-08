@@ -135,6 +135,10 @@ function resetMap() {
 	putRock(4,3);
 	putRock(6,6);
 	putRock(6,7);
+	putRock(9,2);
+	putRock(10,7);
+	putRock(11,7);
+	putRock(12,7);
 }
 
 var timerCount = 0;

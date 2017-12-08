@@ -24,7 +24,7 @@ var coinArray1 = new Array();
 var trapArray = new Array();
 
 var trapTimer;
-
+var itemButton;
 
 async function gameFunc() {
 	resetMap();
@@ -156,16 +156,16 @@ async function check() {
 function resetMap() {
 
 	const map1 = Hack.createMap(`
-		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|03 03 03 03 03 03 03 03 03 03 03 03 03 10|
-		10|03 03 03 03 03 03 03 03 03 03 03 03 03 10|
-		10|03 03 03 03 03 03 03 03 03 03 03 03 03 10|
-		10|03 03 03 03 03 03 03 03 03 03 03 03 03 10|
-		10|03 03 03 03 03 03 03 03 03 03 03 03 03 10|
-		10|03 03 03 03 03 03 03 03 03 03 03 03 03 10|
-		10|00 00 00 00 00 00 00 00 00 00 00 00 00 00
-		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
-		10|10|10|10|10|10|10|10|10|10|10|10|10|10|10|
+		51|51|51|51|51|51|51|51|51|51|51|51|51|51|51|
+		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
+		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
+		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
+		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
+		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
+		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
+		52|53 53 53 53 53 53 53 53 53 53 53 53 53 00
+		52|52|52|52|52|52|52|52|52|52|52|52|52|52|52|
+		51|51|51|51|51|51|51|51|51|51|51|51|51|51|51|
 	`);
 	Hack.maps.map1 = map1;
 
@@ -291,12 +291,12 @@ function timerFunc() {
 
 
 function putButton(x, y) {
-	const itemButton = new RPGObject();
-	itemButton.mod(('▼ スキン', _kコイン));
+	itemButton = new RPGObject();
+	itemButton.mod(('▼ スキン', Hack.assets.floorButton));
 	itemButton.locate(x, y, 'map1');
 	itemButton.onplayerenter = () => {
-		itemButton.destroy();
 		Hack.log("トラップタイマー発動");
+		itemButton.mod(('▼ スキン', Hack.assets.floorButtonPushed));
 
 		// コインを置きまくる
 		for (var i=4; i<=13; i++) {
