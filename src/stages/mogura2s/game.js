@@ -10,6 +10,7 @@ var trapArray = new Array();
 var trapFlag = false;
 var startPlayerX = 1;
 var startPlayerY = 2;
+var moguraRandomArray = [3, 2, 4, 1, 0, 4, 2, 3, 0, 1, 4, 2];
 
 async function gameFunc() {
 	resetMap();
@@ -73,7 +74,7 @@ async function gameFunc() {
 			Hack.startTimer();
 		
 			// 魔道書のコードをひらく
-			feeles.openCode('stages/mogura2/code.js');
+			feeles.openCode('stages/mogura2s/code.js');
 			
 			// 削除
 			Hack.menuGroup.removeChild(strategyTimer);
@@ -134,18 +135,15 @@ function resetMap() {
 
 	putRock(4,3);
 	putRock(6,6);
-	// putRock(8,3);
+	putRock(6,7);
+	putRock(8,3);
 	putRock(9,2);
+	putRock(10,7);
 	putRock(11,5);
 	putRock(12,7);
 	putRock(2,5);
+	putRock(6,1);
 	putRock(3,7);
-
-	putNumber(3,3, '1');
-	putNumber(5,3, '2');
-	putNumber(7,3, '3');
-	putNumber(9,3, '4');
-	putNumber(11,3, '5');
 
 }
 
@@ -153,19 +151,12 @@ var timerCount = 0;
 var itemMogura;
 var moguraX = 1;
 var moguraY = 0;
-
-function putNumber(x, y, num) {
-	const label1 = new enchant.ui.MutableText(x*32+8, y*32+16);
-	label1.text = num;
-	Hack.menuGroup.addChild(label1);
-}
-
+var moguraCount = 0;
 
 function timerFunc() {
-	moguraX+=2;
-	if (moguraX>11) {
-		moguraX = 3;
-	} 
+
+ 	moguraX = moguraRandomArray[moguraCount % moguraRandomArray.length] *2 + 3;
+	moguraCount++;
 	moguraY = 3;
 	moguraOn(moguraX, moguraY);
 }
@@ -234,7 +225,7 @@ Hack.onreset = function() {
 	resetMap();
 	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
-
+	moguraCount = 0;
 	itemMogura.destroy();
 	moguraX = 1;
 	moguraY = 0;
