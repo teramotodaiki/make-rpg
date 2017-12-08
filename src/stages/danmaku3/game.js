@@ -88,7 +88,7 @@ async function gameFunc() {
 	feeles.closeCode();
 	feeles.closeReadme();
 
-	Hack.on('gameclear', function () {
+	Hack.on('gameend', function () {
 		// 一旦削除
 		const score = Hack.score;
 		Hack.scoreLabel.score = 0;
@@ -144,7 +144,7 @@ async function check() {
 		// for (var i=0; i<trapArray.length; i++) {
 		for(var i=0; i<trapArray.length; i++) {
 			var obj = trapArray[i];
-			console.log("check array:" + i +", x:" + obj.mapX+", y:" + obj.mapY + "targetX:"+targetX+",y:"+targetY) ;
+			console.log('check array:' + i +', x:' + obj.mapX+', y:' + obj.mapY + 'targetX:'+targetX+',y:'+targetY) ;
 			if (obj.mapX == targetX && obj.mapY == targetY) {
 				return 1;
 			}
@@ -205,109 +205,109 @@ function setTraps(pattern) {
 	}
 
 	switch(pattern) {
-		case 0: {
-			// coin復活
-			if (coinArray2.length>1) {
-				for (var i=0; i<coinArray2.length; i++) {
-					coinArray2[i].mod(('▼ スキン', _kコイン));
-				}
+	case 0: {
+		// coin復活
+		if (coinArray2.length>1) {
+			for (var i=0; i<coinArray2.length; i++) {
+				coinArray2[i].mod(('▼ スキン', _kコイン));
 			}
-			// トラップ出す
-			for (var i=-8; i<=6; i+=3) {
-				for (var k=2; k<=14; k++) {
-					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
-						const trap = putTrap(k,i+k);
-						trapArray.push(trap);	
+		}
+		// トラップ出す
+		for (var i=-8; i<=6; i+=3) {
+			for (var k=2; k<=14; k++) {
+				if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
+					const trap = putTrap(k,i+k);
+					trapArray.push(trap);	
 
-						// トラップの上にコインがあったら一旦消してスタックする
-						if (coinArray.length>1) {
-							for(var l=0; l<coinArray.length; l++) {
-								var coinX = coinArray[l].mapX;
-								var coinY = coinArray[l].mapY;
-								if (coinX == k && coinY == (i+k)) {
-									console.log("coin重なった" + coinX+","+coinY);
-									coinArray0.push(coinArray[l]);
-									coinArray[l].mod(('▼ スキン', _wわなかかった));
+					// トラップの上にコインがあったら一旦消してスタックする
+					if (coinArray.length>1) {
+						for(var l=0; l<coinArray.length; l++) {
+							var coinX = coinArray[l].mapX;
+							var coinY = coinArray[l].mapY;
+							if (coinX == k && coinY == (i+k)) {
+								console.log('coin重なった' + coinX+','+coinY);
+								coinArray0.push(coinArray[l]);
+								coinArray[l].mod(('▼ スキン', _wわなかかった));
 
-									// coinArray[l].destroy();
-								}
+								// coinArray[l].destroy();
 							}
-						}		
+						}
+					}		
+				}		
+			}
+		}
+		break;
+	}
+	case 1: {
+		// coin復活
+		if (coinArray0.length>1) {
+			for (var i=0; i<coinArray0.length; i++) {
+				coinArray0[i].mod(('▼ スキン', _kコイン));
+			}
+		}
+
+		// トラップ出す
+		for (var i=-9; i<=6; i+=3) {
+			for (var k=2; k<=14; k++) {
+				if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
+					const trap = putTrap(k,i+k);
+					trapArray.push(trap);					
+
+					// トラップの上にコインがあったら一旦消してスタックする
+					if (coinArray.length>1) {
+						for(var l=0; l<coinArray.length; l++) {
+							var coinX = coinArray[l].mapX;
+							var coinY = coinArray[l].mapY;
+							if (coinX == k && coinY == (i+k)) {
+								// coinArray1.push(new Point(coinX, coinY));
+								// // coinArray[l].destroy();
+								coinArray1.push(coinArray[l]);
+
+								coinArray[l].mod(('▼ スキン', _wわなかかった));
+
+							}
+						}
 					}		
 				}
 			}
-			break;
 		}
-		case 1: {
-			// coin復活
-			if (coinArray0.length>1) {
-				for (var i=0; i<coinArray0.length; i++) {
-					coinArray0[i].mod(('▼ スキン', _kコイン));
-				}
+		break;
+	}
+	case 2: {
+		// coin復活
+		if (coinArray1.length>1) {
+			for (var i=0; i<coinArray1.length; i++) {
+				coinArray1[i].mod(('▼ スキン', _kコイン));
 			}
+		}
 
-			// トラップ出す
-			for (var i=-9; i<=6; i+=3) {
-				for (var k=2; k<=14; k++) {
-					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
-						const trap = putTrap(k,i+k);
-						trapArray.push(trap);					
+		// トラップ出す
+		for (var i=-10; i<=6; i+=3) {
+			for (var k=2; k<=14; k++) {
+				if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
+					const trap = putTrap(k,i+k);
+					trapArray.push(trap);					
 
-						// トラップの上にコインがあったら一旦消してスタックする
-						if (coinArray.length>1) {
-							for(var l=0; l<coinArray.length; l++) {
-								var coinX = coinArray[l].mapX;
-								var coinY = coinArray[l].mapY;
-								if (coinX == k && coinY == (i+k)) {
-									// coinArray1.push(new Point(coinX, coinY));
-									// // coinArray[l].destroy();
-									coinArray1.push(coinArray[l]);
+					// トラップの上にコインがあったら一旦消してスタックする
+					if (coinArray.length>1) {
+						for(var l=0; l<coinArray.length; l++) {
+							var coinX = coinArray[l].mapX;
+							var coinY = coinArray[l].mapY;
+							if (coinX == k && coinY == (i+k)) {
+								// coinArray1.push(new Point(coinX, coinY));
+								// // coinArray[l].destroy();
+								coinArray2.push(coinArray[l]);
 
-									coinArray[l].mod(('▼ スキン', _wわなかかった));
+								coinArray[l].mod(('▼ スキン', _wわなかかった));
 
-								}
 							}
-						}		
-					}
+						}
+					}		
 				}
 			}
-			break;
 		}
-		case 2: {
-			// coin復活
-			if (coinArray1.length>1) {
-				for (var i=0; i<coinArray1.length; i++) {
-					coinArray1[i].mod(('▼ スキン', _kコイン));
-				}
-			}
-
-			// トラップ出す
-			for (var i=-10; i<=6; i+=3) {
-				for (var k=2; k<=14; k++) {
-					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
-						const trap = putTrap(k,i+k);
-						trapArray.push(trap);					
-
-						// トラップの上にコインがあったら一旦消してスタックする
-						if (coinArray.length>1) {
-							for(var l=0; l<coinArray.length; l++) {
-								var coinX = coinArray[l].mapX;
-								var coinY = coinArray[l].mapY;
-								if (coinX == k && coinY == (i+k)) {
-									// coinArray1.push(new Point(coinX, coinY));
-									// // coinArray[l].destroy();
-									coinArray2.push(coinArray[l]);
-
-									coinArray[l].mod(('▼ スキン', _wわなかかった));
-
-								}
-							}
-						}		
-					}
-				}
-			}
-			break;
-		}
+		break;
+	}
 	}
 }
 
@@ -323,7 +323,7 @@ function putButton(x, y) {
 	itemButton.mod(('▼ スキン', Hack.assets.floorButton));
 	itemButton.locate(x, y, 'map1');
 	itemButton.onplayerenter = () => {
-		Hack.log("トラップタイマー発動");
+		Hack.log('トラップタイマー発動');
 		itemButton.mod(('▼ スキン', Hack.assets.floorButtonPushed));
 
 		// コインを置きまくる
@@ -362,14 +362,14 @@ function putTrap(x, y) {
 	// 出現時に真上にプレイヤーがいた
 	if (player.mapX == x && player.mapY == y) {
 		player.damageTime = 30;
-		Hack.log("わなにかかった");	
+		Hack.log('わなにかかった');	
 		player.stun();
 	}
 	
 	item2.on(('▼ イベント', 'のった'), () => {
 		item2.mod(('▼ スキン', _wわなかかった));
 		player.damageTime = 30;
-		Hack.log("わなにかかった");
+		Hack.log('わなにかかった');
 		player.stun();
 
 	});
@@ -389,9 +389,9 @@ Hack.onreset = function() {
 
 
 var Point = function(x, y) {
-    // メンバ変数 (インスタンス変数)
-    this.x = x;
-    this.y = y;
-}
+	// メンバ変数 (インスタンス変数)
+	this.x = x;
+	this.y = y;
+};
 
 export default gameFunc;

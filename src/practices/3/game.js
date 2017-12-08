@@ -56,7 +56,7 @@ async function gameFunc() {
 	// 魔道書のコードをひらく
 	feeles.openCode('practices/3/code.js');
 
-	Hack.on('gameclear', function () {
+	Hack.on('gameend', function () {
 		// 一旦削除
 		const score = Hack.score;
 		Hack.scoreLabel.score = 0;

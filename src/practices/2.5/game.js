@@ -52,7 +52,7 @@ async function gameFunc() {
 		Hack.startTimer();
 	};
 
-	Hack.on('gameclear', function () {
+	Hack.on('gameend', function () {
 		// 一旦削除
 		const score = Hack.score;
 		Hack.scoreLabel.score = 0;
