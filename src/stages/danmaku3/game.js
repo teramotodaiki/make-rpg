@@ -5,7 +5,7 @@ import * as sequence from 'sequence';
  * デバッグ中につき魔道書は最初から表示されています
  */
 var mCoinScore = 20;
-var startPlayerX = 1;
+var startPlayerX = 0;
 var startPlayerY = 7;
 
 // １つのレーンに存在する弾丸のかず
@@ -153,20 +153,19 @@ async function check() {
 	} else {
 		return 0;
 	}
-
 }
 
 function resetMap() {
 
 	const map1 = Hack.createMap(`
 		51|51|51|51|51|51|51|51|51|51|51|51|51|51|51|
-		52|54 54 54 03 03 03 03 03 03 03 03 03 03 52|
-		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
-		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
-		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
-		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
-		52|03 03 03 03 03 03 03 03 03 03 03 03 03 52|
-		52|53 53 53 53 53 53 53 53 53 53 53 53 53 00
+		52|04 58 58 58 58 58 58 58 58 58 58 58 58 52|
+		52|04 58 58 58 58 58 58 58 58 58 58 58 58 52|
+		52|04 58 58 58 58 58 58 58 58 58 58 58 58 52|
+		52|04 58 58 58 58 58 58 58 58 58 58 58 58 52|
+		52|04 58 58 58 58 58 58 58 58 58 58 58 58 52|
+		52|04 58 58 58 58 58 58 58 58 58 58 58 58 52|
+		53 53 57 57 57 57 57 57 57 57 57 57 57 57 00
 		52|52|52|52|52|52|52|52|52|52|52|52|52|52|52|
 		51|51|51|51|51|51|51|51|51|51|51|51|51|51|51|
 	`);
@@ -190,7 +189,7 @@ function resetMap() {
 	});
 
 
-	putButton(2,7);
+	putButton(1,7);
 	// setTraps(0);
 
 }
@@ -214,8 +213,8 @@ function setTraps(pattern) {
 				}
 			}
 			// トラップ出す
-			for (var i=-8; i<=4; i+=3) {
-				for (var k=0; k<=14; k++) {
+			for (var i=-8; i<=6; i+=3) {
+				for (var k=2; k<=14; k++) {
 					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
 						const trap = putTrap(k,i+k);
 						trapArray.push(trap);	
@@ -248,8 +247,8 @@ function setTraps(pattern) {
 			}
 
 			// トラップ出す
-			for (var i=-9; i<=4; i+=3) {
-				for (var k=0; k<=14; k++) {
+			for (var i=-9; i<=6; i+=3) {
+				for (var k=2; k<=14; k++) {
 					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
 						const trap = putTrap(k,i+k);
 						trapArray.push(trap);					
@@ -283,8 +282,8 @@ function setTraps(pattern) {
 			}
 
 			// トラップ出す
-			for (var i=-10; i<=4; i+=3) {
-				for (var k=0; k<=14; k++) {
+			for (var i=-10; i<=6; i+=3) {
+				for (var k=2; k<=14; k++) {
 					if (k>0 && k<14 && (i+k)>0 && (i+k)<8) { 
 						const trap = putTrap(k,i+k);
 						trapArray.push(trap);					
@@ -328,7 +327,7 @@ function putButton(x, y) {
 		itemButton.mod(('▼ スキン', Hack.assets.floorButtonPushed));
 
 		// コインを置きまくる
-		for (var i=3; i<=13; i++) {
+		for (var i=2; i<=13; i++) {
 			const coin = putCoin(i, 7);
 			coinArray.push(coin);
 		}
@@ -338,7 +337,7 @@ function putButton(x, y) {
 		// }
 
 		timerFunc();
-		trapTimer = feeles.setInterval(timerFunc, 2000);
+		trapTimer = feeles.setInterval(timerFunc, 1000);
 	};
 	return itemButton;
 }
