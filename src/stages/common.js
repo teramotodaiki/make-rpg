@@ -10,7 +10,7 @@ import addSnippet from 'addSnippet';
 import inspect from './inspect';
 
 
-window.STRATEGY_TIME = 0 * 1000; // 説明画面でとまる秒数. 実際には１分とか.
+window.STRATEGY_TIME = 60 * 1000; // 説明画面でとまる秒数. 実際には１分とか.
 
 const common = () => {
 	// ゲームリセットボタン
