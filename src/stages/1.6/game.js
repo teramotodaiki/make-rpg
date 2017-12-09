@@ -33,8 +33,11 @@ async function gameFunc() {
 	// 詠唱待ち時間設定
 	window.WAIT_TIME = 3000;
 
-	// ゲーム時間設定
-	window.TIME_LIMIT = 300 * 1000;
+	// ゲーム時間設定（みじかい）
+	window.TIME_LIMIT = 180 * 1000;
+
+	// リミット解除
+	window.MAX_SCORE = 1000000;
 
 	// せつめい
 	const description = new enchant.Sprite(388, 224);
@@ -70,19 +73,6 @@ async function gameFunc() {
 			Hack.overlayGroup.addChild(Hack.scoreLabel);
 			Hack.scoreLabel.score = score;
 		}, 1000);
-
-		// 次へボタン
-		const nextButton = new enchant.Sprite(120, 32);
-		nextButton.image = game.assets['resources/next_button'];
-		nextButton.moveTo(180, 260);
-		nextButton.ontouchstart = () => {
-			// stage 1.5 へ
-			feeles.replace('stages/1.5/index.html');
-		};
-
-		setTimeout(() => {		
-			Hack.overlayGroup.addChild(nextButton);		
-		}, 4000);
 	});
 
 }

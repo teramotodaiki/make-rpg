@@ -11,6 +11,7 @@ import inspect from './inspect';
 
 
 window.STRATEGY_TIME = 60 * 1000; // 説明画面でとまる秒数. 実際には１分とか.
+window.MAX_SCORE = 1000;
 
 const common = () => {
 	// ゲームリセットボタン
@@ -81,8 +82,8 @@ const common = () => {
 		Hack.world.addChild(scoreEffect);
 
 		// スコアの上限は 1000
-		if (Hack.score >= 1000) {
-			Hack.score = 1000;
+		if (Hack.score >= window.MAX_SCORE) {
+			Hack.score = window.MAX_SCORE;
 			Hack.gameclearPerfect();
 		}
 		// スコアを描画
