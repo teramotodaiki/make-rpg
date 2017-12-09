@@ -484,6 +484,11 @@ Object.defineProperty(Hack, 'score', {
 			// ゲーム終了後にはスコアを増やさない
 			return;
 		}
+		if (typeof value !== 'number') {
+			// 数値ではない
+			return;
+		}
+		value = Math.min(window.MAX_SCORE, value); // 最大値
 		if (Hack.scoreLabel.score !== value) {
 			scoreOldValue = Hack.scoreLabel.score;
 			scoreNewValue = value;
