@@ -4,6 +4,8 @@ const state = {
 	score: 0,
 	// 残り時間（秒）
 	last: 0,
+	// 残りリセット可能回数
+	reset: 10,
 	// check() の結果の数値
 	result: null
 };
@@ -12,15 +14,18 @@ const state = {
 const div = document.createElement('div');
 div.style.position = 'absolute';
 div.style.bottom = 0;
-div.style.height = '150px';
+div.style.height = window.innerHeight - 320 + 'px';
 div.style.fontSize = '32px';
 div.style.fontWeight = 'bold';
 div.style.color = 'white';
 div.style.width = '100%';
 
-feeles.fetch('resources/background.png')
+feeles
+	.fetch('resources/background.png')
 	.then(response => response.blob())
-	.then(blob => div.style.backgroundImage = `url(${URL.createObjectURL(blob)})`)
+	.then(
+		blob => (div.style.backgroundImage = `url(${URL.createObjectURL(blob)})`)
+	)
 	.then(() => document.body.appendChild(div));
 
 function inspect(nextState) {
@@ -31,9 +36,14 @@ function inspect(nextState) {
 	const min = Math.floor(state.last / 60);
 	const sec = state.last % 60;
 	div.innerHTML = `
-	のこり：${min > 0 ? `${min} 分 ` : ''}${sec} 秒<br />
-	スコア：${state.score} 点<br />
-	${state.result === null ? '' : `けっか：${state.result}`}`;
+	じかん　：${min > 0 ? `${min} 分 ` : ''}${sec} 秒<br />
+	スコア　：${state.score} 点<br />
+	リセット：あと ${state.reset} 回<br />
+	${state.result === null ? '' : `チェック：${state.result}`}`;
 }
 
 export default inspect;
+
+export function getState() {
+	return Object.assign({}, state);
+}

@@ -7,7 +7,7 @@ import { kill, enable } from 'feeles/eval';
 import 'mod/coordinate';
 import snippets from 'snippets';
 import addSnippet from 'addSnippet';
-import inspect from './inspect';
+import inspect, { getState } from './inspect';
 
 
 window.STRATEGY_TIME = 60 * 1000; // 説明画面でとまる秒数. 実際には１分とか.
@@ -19,11 +19,26 @@ const common = () => {
 	resetButton.image = game.assets['resources/reset_button'];
 	resetButton.moveTo(0, 320 - 64);
 	resetButton.ontouchstart = () => {
+		// リセット残り回数
+		const { reset } = getState();
+		// もうリセットできない
+		if (reset <= 0) return;
+
 		Hack.dispatchEvent(new Event('reset'));
 		// リセットはストップをかねる
 		kill();
 		// 次のコードを実行可能にする
 		enable();
+
+		// 見た目を変更
+		const nextState = { reset: reset - 1 };
+		// 反映
+		inspect(nextState);
+		if (nextState.reset <= 0) {
+			// 押せないように
+			resetButton.touchEnabled = false;
+			resetButton.opacity = 0.5;
+		}
 	};
 	Hack.menuGroup.addChild(resetButton);
 
