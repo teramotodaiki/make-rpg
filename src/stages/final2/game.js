@@ -1,22 +1,22 @@
 import 'hackforplay/core';
 import * as sequence from 'sequence';
+import map from './map';
 
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
  */
-var mCoinScore = 1;
-var mMapScore = 10;
+var mTresureBoxScore = 20;
 
 async function gameFunc() {
 	resetMap();
 
-	const player = self.player = new Player(); // プレイヤーをつくる
-	player.locate(0, 1); // はじめの位置
-	player.on(('▼ イベント', 'こうげきするとき'), (event) => {
+	const player = (self.player = new Player()); // プレイヤーをつくる
+	player.locate(3, 1); // はじめの位置
+	player.on(('▼ イベント', 'こうげきするとき'), event => {
 		const 使い手 = event.target;
 		const ビーム = new RPGObject();
 		ビーム.mod(('▼ スキン', Hack.assets.energyBall));
-		ビーム.onふれはじめた = (event) => {
+		ビーム.onふれはじめた = event => {
 			if (event.hit !== 使い手) {
 				Hack.Attack(event.mapX, event.mapY, 使い手.atk);
 				ビーム.destroy();
@@ -37,23 +37,9 @@ async function gameFunc() {
 
 	// せつめい
 	const description = new enchant.Sprite(388, 224);
-	description.image = game.assets['resources/start_message_01'];
+	description.image = game.assets['resources/start_message_02'];
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
-
-	// const startButton = new enchant.Sprite(120, 32);
-	// startButton.image = game.assets['resources/start_button'];
-	// startButton.moveTo(180, 220);
-	// Hack.menuGroup.addChild(startButton);
-	// startButton.ontouchstart = () => {
-	// 	Hack.menuGroup.removeChild(description);
-	// 	Hack.menuGroup.removeChild(startButton);
-	// 	// タイマー開始
-	// 	Hack.startTimer();
-
-	// 	// 魔道書のコードをひらく
-	// 	feeles.openCode('stages/1/code.js');
-	// };
 
 	// 説明画面（作戦タイム）のタイマー => ゲームスタート
 	const strategyTimer = new enchant.ui.MutableText(352, 8);
@@ -80,7 +66,7 @@ async function gameFunc() {
 	feeles.closeCode();
 	feeles.closeReadme();
 
-	Hack.on('gameend', function () {
+	Hack.on('gameend', function() {
 		// 一旦削除
 		const score = Hack.score;
 		Hack.scoreLabel.score = 0;
@@ -97,90 +83,45 @@ async function gameFunc() {
 		nextButton.image = game.assets['resources/next_button'];
 		nextButton.moveTo(180, 260);
 		nextButton.ontouchstart = () => {
-			// stage final3 へ
+			// stage 3 へ
 			feeles.replace('stages/final3/index.html');
 		};
 
-		setTimeout(() => {		
-			Hack.overlayGroup.addChild(nextButton);		
+		setTimeout(() => {
+			Hack.overlayGroup.addChild(nextButton);
 		}, 4000);
 	});
-
 }
 
 function resetMap() {
-
-
-	const map1 = Hack.createMap(`
-		061|061|061|061|061|061|061|061|061|061|061|061|061|061|061|
-		071 133|071 071 071 133|071 071 071 133|071 071 071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
-		071 132|071 133|071 132|071 133|071 132|071 133|071 132|071 
-		071 071 071 132|071 071 071 132|071 071 071 132|071 071 071 
-		081|081|081|081|081|081|081|081|081|081|081|081|081|081|081|
-	`);
+	const map1 = Hack.createMap(map);
 	Hack.maps.map1 = map1;
-
 	Hack.changeMap('map1'); // map1 をロード
-	
-	const itemStairs2 = new RPGObject();
-	itemStairs2.mod(('▼ スキン', _kくだりかいだん));
-	itemStairs2.locate(14, 1, 'map1');
-	itemStairs2.layer = RPGMap.Layer.Under;
-	itemStairs2.on(('▼ イベント', 'のった'), async () => {
-		// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
-		Hack.player.stop();
-		await new Promise((resolve) => setTimeout(resolve, 100));
-		Hack.player.resume();
-		resetMap();
-		Hack.floorLabel.score++;
-		player.locate(0, 1); // はじめの位置
 
-		// 階段を降りた時のスコア
-		Hack.score += mMapScore;
-	});
-
-
-	// コインを置きまくる
-	for (const x of [0, 2, 4, 6, 8, 10, 12, 14]) {
-		for (const y of [2, 3, 4, 5, 6, 7]) {
-			putCoin(x, y);
+	for (const x of [3, 5, 7, 9, 11]) {
+		// 5列 * 10行 * 20点 = 1000点
+		for (const y of [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]) {
+			putTresureBox(x, y);
 		}
 	}
 
-	// コインを置きまくる
-	for (const x of [2, 3, 4, 6, 7, 8, 10, 11, 12]) {
-		putCoin(x, 1);
-	}
-
-	for (const x of [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]) {
-		putCoin(x, 8);
-	}
-
-	// 
-	
 	/*+ モンスター アイテム せっち システム */
-
 }
 
-function putCoin(x, y) {
-	const itemCoin1 = new RPGObject();
-	itemCoin1.mod(('▼ スキン', _kコイン));
-	itemCoin1.locate(x, y, 'map1');
-	itemCoin1.onplayerenter = () => {
-		itemCoin1.destroy();
-		Hack.score += mCoinScore;
+function putTresureBox(x, y) {
+	const itemBox = new RPGObject();
+	itemBox.mod(('▼ スキン', _tたからばこ));
+	itemBox.locate(x, y, 'map1');
+	itemBox.onこうげきされた = () => {
+		delete itemBox.onこうげきされた;
+		itemBox.mod(('▼ スキン', _tたからばこひらいた));
+		Hack.score += mTresureBoxScore;
 	};
 }
 
-
 Hack.onreset = function() {
 	resetMap();
-	player.locate(0, 1); // はじめの位置
+	player.locate(3, 1); // はじめの位置
 	player.forward = [0, 1];
 };
 
