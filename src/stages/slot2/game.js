@@ -108,8 +108,8 @@ async function gameFunc() {
 		nextButton.image = game.assets['resources/next_button'];
 		nextButton.moveTo(180, 260);
 		nextButton.ontouchstart = () => {
-			// stage 1.5 へ
-			feeles.replace('stages/1/index.html');
+			// 次へ
+			feeles.replace('stages/danmaku3/index.html');
 		};
 
 		setTimeout(() => {		
