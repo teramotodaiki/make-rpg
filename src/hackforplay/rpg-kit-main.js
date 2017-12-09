@@ -193,8 +193,8 @@ MapObject.dictionary = MapObject.Dictionaly || {}; // 旧仕様ユーザー定�
 MapObject.dictionary = {
 	// new-rpg
 	coin: 20,
-	box: 21,
-	openedBox: 22,
+	box: 48,
+	openedBox: 49,
 	downStair: 25,
 	upStair: 26,
 	pot: 32,
@@ -215,6 +215,8 @@ MapObject.dictionary = {
 	displayNone: 127,
 	displayOK: 128,
 	displayArrow: 129,
+	statueAbove: 105,
+	statueBottom: 115,
 
 	// 新仕様公式定義
 	// clay: 320,
