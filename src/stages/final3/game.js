@@ -4,15 +4,15 @@ import * as sequence from 'sequence';
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
  */
-var mDragonScore = 35;
+var mDragonScore = 38;
 var mDragonHp = 1;
-var mOrbScore = 5;
+var mOrbScore = 1;
 async function gameFunc() {
 
 	resetMap();
 
 	const player = self.player = new Player(); // プレイヤーをつくる
-	player.locate(7, 8); // はじめの位置
+	player.locate(7, 9); // はじめの位置
 	player.on(('▼ イベント', 'こうげきするとき'), (event) => {
 		const 使い手 = event.target;
 		const ビーム = new RPGObject();
@@ -84,22 +84,22 @@ async function gameFunc() {
 
 Hack.onreset = function() {
 	resetMap();
-	player.locate(7, 8); // はじめの位置
+	player.locate(7, 9); // はじめの位置
 	player.forward = [0, -1];
 };
 
 function resetMap() {
 	const map1 = Hack.createMap(`
-		63|60|61|61|61|62|60|61|62|63|63|63|63|63|63|
-		63|70|71 71 71 72|70|71 72|63|63|63|60|61|62|
-		63|80|81|81|81|82|70|71 72|63|63|63|70|71 72|
-		63|63|63|63|63|63|70|71 72|63|63|63|70|71 72|
-		63|63|63|63|63|63|70|71 72|63|63|63|70|71 72|
-		63|63|63|63|63|63|70|71 72|63|63|63|70|71 72|
-		63|63|63|63|63|63|80|81|82|63|63|63|70|71 72|
-		60|61|61|61|61|61|61|61|61|61|61|62|80|81|82|
-		70|71 71 71 71 71 71 71 71 71 71 72|63|63|63|
-		80|81|81|81|81|81|81|81|81|81|81|82|63|63|63|
+		63|63|63|63|63|63|63|63|63|63|63|63|63|63|63|
+		61|61|61|61|61|61|61|61|61|61|61|61|61|61|61|
+		71 71 71 71 71 71 71 71 71 71 71 71 71 71 71 
+		71 71 71 71 71 71 71 71 71 71 71 71 71 71 71 
+		71 71 71 71 71 71 71 71 71 71 71 71 71 71 71 
+		71 71 71 71 71 71 71 71 71 71 71 71 71 71 71 
+		71 71 71 71 71 71 71 71 71 71 71 71 71 71 71 
+		71 71 71 71 71 71 71 71 71 71 71 71 71 71 71 
+		71 71 71 71 71 71 71 71 71 71 71 71 71 71 71 
+		71 71 71 71 71 71 71 71 71 71 71 71 71 71 71 
 	`);
 	Hack.maps.map1 = map1;
 
@@ -107,16 +107,16 @@ function resetMap() {
 	
 	const itemStairs = new RPGObject();
 	itemStairs.mod(('▼ スキン', _kくだりかいだん));
-	itemStairs.locate(7, 1, 'map1');
+	itemStairs.locate(14, 9, 'map1');
 	itemStairs.layer = RPGMap.Layer.Under;
 	itemStairs.on(('▼ イベント', 'のった'), () => {
 		resetMap();
 		Hack.floorLabel.score++;
-		player.locate(7, 8); // はじめの位置
+		player.locate(7, 9); // はじめの位置
 	});
 
 	// オーブを壊した後呼ぶ関数
-	let orbNum = 3;
+	let orbNum = 12;
 	const destroyOrb = () => {
 		orbNum--; // オーブを 1 へらす
 		Hack.score += mOrbScore; // 得点を増やす		
@@ -132,7 +132,7 @@ function resetMap() {
 	itemDragon.mod(('▼ スキン', _dドラゴン));
 	// itemDragon.hp = 10;
 	itemDragon.atk = 1;
-	itemDragon.locate(7, 5, 'map1');
+	itemDragon.locate(7, 3, 'map1');
 	itemDragon.scale(2, 2);
 	itemDragon.forward = [0, 1];
 	itemDragon.setFrame('Idle', [10]);
@@ -146,32 +146,27 @@ function resetMap() {
 		}
 	});
 
-	const itemGem1 = new RPGObject();
-	itemGem1.mod(('▼ スキン', Hack.assets.orangeOrb));
-	itemGem1.hp = 1;
-	itemGem1.locate(4, 3, 'map1');
-	itemGem1.tl.moveBy(0, 96, 60).moveBy(0, -96, 60).loop();
-	itemGem1.on(('▼ イベント', 'たおれたとき'), destroyOrb);
+	// オーブ（まず下に行く）
+	for (const x of [0, 2, 4, 10, 12, 14]) {
+		putGem(x, 4, destroyOrb);
+	}
+	// オーブ（まず上に行く）
+	for (const x of [1, 3, 5, 9, 11, 13]) {
+		putGem(x, 7, destroyOrb);
+	}
 
-
-	const itemGem2 = new RPGObject();
-	itemGem2.mod(('▼ スキン', Hack.assets.orangeOrb));
-	itemGem2.hp = 1;
-	itemGem2.locate(10, 6, 'map1');
-	itemGem2.tl.moveBy(0, -96, 60).moveBy(0, 96, 60).loop();
-	itemGem2.on(('▼ イベント', 'たおれたとき'), destroyOrb);
-
-
-	const itemGem3 = new RPGObject();
-	itemGem3.mod(('▼ スキン', Hack.assets.orangeOrb));
-	itemGem3.hp = 1;
-	itemGem3.locate(8, 2, 'map1');
-	itemGem3.tl.moveBy(-64, 0, 60).moveBy(64, 0, 60).loop();
-	itemGem3.on(('▼ イベント', 'たおれたとき'), destroyOrb);
+	// 石像（下）
+	for (const x of [0, 2, 4, 10, 12, 14]) {
+		putStone(x, 8);
+	}
+	// 石像（上）
+	for (const x of [1, 3 ,5, 9, 11, 13]) {
+		putStone(x, 3);
+	}
 
 	const itemBarrier = new Sprite(128, 128);
 	itemBarrier.image = game.assets['resources/barrier'];
-	itemBarrier.moveTo(173, 80);
+	itemBarrier.moveTo(173, 16);
 	itemBarrier.opacity = 0.7;
 	itemBarrier.tl.scaleTo(1.1, 20).scaleTo(0.9, 20).loop();
 	itemBarrier.on('enterframe', () => {
@@ -180,11 +175,31 @@ function resetMap() {
 	});
 	Hack.defaultParentNode.addChild(itemBarrier);
 
-	const item1 = new RPGObject();
-	item1.mod(('▼ スキン', _iいしかべ));
-	item1.locate(4, 8, 'map1');
+	
 
 	/*+ モンスター アイテム せっち システム */
+
+}
+
+
+function putGem (x, y, onDestroy) {
+
+	const odd = x % 2 === 0 ? 1 : -1;
+
+	const itemGem1 = new RPGObject();
+	itemGem1.mod(('▼ スキン', Hack.assets.orangeOrb));
+	itemGem1.hp = 1;
+	itemGem1.locate(x, y, 'map1');
+	itemGem1.tl.moveBy(0, odd * 96, 60).moveBy(0, odd * -96, 60).loop();
+	itemGem1.on(('▼ イベント', 'たおれたとき'), onDestroy);
+
+}
+
+function putStone (x, y) {
+
+	const item1 = new RPGObject();
+	item1.mod(('▼ スキン', _iいしかべ));
+	item1.locate(x, y, 'map1');
 
 }
 
