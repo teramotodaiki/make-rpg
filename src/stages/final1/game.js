@@ -69,7 +69,7 @@ async function gameFunc() {
 			Hack.startTimer();
 		
 			// 魔道書のコードをひらく
-			feeles.openCode('stages/semi1/code.js');
+			feeles.openCode('stages/final1/code.js');
 			
 			// 削除
 			Hack.menuGroup.removeChild(strategyTimer);
@@ -97,8 +97,8 @@ async function gameFunc() {
 		nextButton.image = game.assets['resources/next_button'];
 		nextButton.moveTo(180, 260);
 		nextButton.ontouchstart = () => {
-			// stage semi2 へ
-			feeles.replace('stages/semi2/index.html');
+			// stage final2 へ
+			feeles.replace('stages/final2/index.html');
 		};
 
 		setTimeout(() => {		
@@ -114,11 +114,11 @@ function resetMap() {
 	const map1 = Hack.createMap(`
 		061|061|061|061|061|061|061|061|061|061|061|061|061|061|061|
 		071 133|071 071 071 133|071 071 071 133|071 071 071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
-		071 133|071 133|071 133|071 133|071 133|071 133|071 133|071 
+		071 132|071 133|071 132|071 133|071 132|071 133|071 132|071 
+		071 071 071 132|071 071 071 132|071 071 071 132|071 071 071 
+		081|081|081|081|081|081|081|081|081|081|081|081|081|081|081|
+		061|061|061|061|061|061|061|061|061|061|061|061|061|061|061|
+		071 133|071 071 071 133|071 071 071 133|071 071 071 133|071 
 		071 132|071 133|071 132|071 133|071 132|071 133|071 132|071 
 		071 071 071 132|071 071 071 132|071 071 071 132|071 071 071 
 		081|081|081|081|081|081|081|081|081|081|081|081|081|081|081|
@@ -129,7 +129,7 @@ function resetMap() {
 	
 	const itemStairs2 = new RPGObject();
 	itemStairs2.mod(('▼ スキン', _kくだりかいだん));
-	itemStairs2.locate(14, 1, 'map1');
+	itemStairs2.locate(0, 6, 'map1');
 	itemStairs2.layer = RPGMap.Layer.Under;
 	itemStairs2.on(('▼ イベント', 'のった'), async () => {
 		// ダッシュしながら階段に乗ると直前のコインが消える前にリロードされるので少し待つ
@@ -146,22 +146,18 @@ function resetMap() {
 
 
 	// コインを置きまくる
-	for (const x of [0, 2, 4, 6, 8, 10, 12, 14]) {
-		for (const y of [2, 3, 4, 5, 6, 7]) {
-			putCoin(x, y);
-		}
-	}
-
-	// コインを置きまくる
-	for (const x of [2, 3, 4, 6, 7, 8, 10, 11, 12]) {
+	for (const x of [2, 3, 4, 6, 7, 8, 10, 11, 12, 14]) {
 		putCoin(x, 1);
+		putCoin(x, 6);
 	}
-
+	for (const x of [0, 2, 4, 6, 8, 10, 12, 14]) {
+		putCoin(x, 2);
+		putCoin(x, 7);
+	}
 	for (const x of [0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14]) {
+		putCoin(x, 3);
 		putCoin(x, 8);
 	}
-
-	// 
 	
 	/*+ モンスター アイテム せっち システム */
 
