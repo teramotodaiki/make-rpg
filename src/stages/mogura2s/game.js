@@ -40,6 +40,9 @@ async function gameFunc() {
 	// ゲーム時間設定
 	window.TIME_LIMIT = 300 * 1000;
 
+	// リミット解除
+	window.MAX_SCORE = 10000000;
+
 	// せつめい
 	const description = new enchant.Sprite(388, 224);
 	description.image = game.assets['resources/start_message_01'];
