@@ -164,12 +164,10 @@ function timerFunc() {
 	timerCount++;
 	if (timerCount == 40) {
 		setTraps();
-		Hack.log('トラップ発動');
 	} else if (timerCount == 80) {
 		setTraps();
 		timerCount = 0;
 	} else if (timerCount % 10 == 0 && timerCount < 40) {
-		Hack.log('トラップ発動まであと'+(40-timerCount)*0.1+'秒');
 	}
 }
 

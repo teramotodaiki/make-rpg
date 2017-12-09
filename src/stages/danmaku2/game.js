@@ -111,11 +111,6 @@ async function gameFunc() {
 		}, 4000);
 	});
 
-
-	player.ondangan = () => {
-		Hack.log('あたった');
-	};
-
 	feeles.setAlias('check', check, 'check()');
 
 }
@@ -295,7 +290,6 @@ function putButton(x, y) {
 	itemButton.mod(('▼ スキン', Hack.assets.floorButton));
 	itemButton.locate(x, y, 'map1');
 	itemButton.onplayerenter = () => {
-		Hack.log('トラップタイマー発動');
 		itemButton.mod(('▼ スキン', Hack.assets.floorButtonPushed));
 
 		// コインを置きまくる
@@ -334,14 +328,12 @@ function putTrap(x, y) {
 	// 出現時に真上にプレイヤーがいた
 	if (player.mapX == x && player.mapY == y) {
 		player.damageTime = 30;
-		Hack.log('わなにかかった');	
 		player.stun();
 	}
 	
 	item2.on(('▼ イベント', 'のった'), () => {
 		item2.mod(('▼ スキン', _wわなかかった));
 		player.damageTime = 30;
-		Hack.log('わなにかかった');
 		player.stun();
 
 	});

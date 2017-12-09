@@ -152,7 +152,6 @@ function putKanban(x, y) {
 	itemKanban1.mod(('▼ スキン', _kコイン));
 	itemKanban1.locate(x, y, 'map1');
 	itemKanban1.on(('▼ イベント', 'こうげきされた'), () => {
-		Hack.log(slotAnswer + ' と書いてある');
 	});
 }
 
@@ -169,7 +168,6 @@ function putSlot1(x, y) {
 			slotNumber1 = 0;
 		}
 		checkAnswer();
-		Hack.log((slotNumber1*10 + slotNumber2));
 	});
 }
 
@@ -183,7 +181,6 @@ function putSlot2(x, y) {
 			slotNumber2 = 0;
 		}
 		checkAnswer();
-		Hack.log((slotNumber1*10 + slotNumber2));
 	});
 }
 

@@ -117,11 +117,6 @@ async function gameFunc() {
 		}, 4000);
 	});
 
-
-	player.ondangan = () => {
-		Hack.log('あたった');
-	};
-
 }
 var danganTimer;
 
