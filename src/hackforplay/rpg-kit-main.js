@@ -477,7 +477,7 @@ Object.defineProperty(Hack, 'score', {
 	enumerable: true,
 	configurable: false,
 	get: function() {
-		return Hack.scoreLabel.score;
+		return Hack.scoreLabel.score || 0;
 	},
 	set: function(value) {
 		if (!Hack.isPlaying) {
