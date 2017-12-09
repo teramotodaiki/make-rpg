@@ -71,10 +71,14 @@ const common = () => {
 	Hack.on('realtimescorechange', ({ oldValue, newValue }) => {
 		// スコアが増えたときに出る数字
 		const scoreEffect = new enchant.ui.ScoreLabel();
-		scoreEffect.score = (newValue - oldValue); // 取得したスコア
+		scoreEffect.score = newValue - oldValue; // 取得したスコア
 		Object.defineProperty(scoreEffect, 'easing', { value: 0, writable: false });
 		scoreEffect.label = '';
-		scoreEffect.moveTo(player.center.x - (scoreEffect.score.toString().length * scoreEffect.fontSize / 2), player.y);
+		scoreEffect.moveTo(
+			player.center.x -
+								scoreEffect.score.toString().length * scoreEffect.fontSize / 2,
+			player.y
+		);
 		// いい感じのエフェクト
 		scoreEffect.tl.moveBy(0, -8, 8).removeFromScene();
 		// scorechange のタイミングでシーンに追加する場合は enterframe を呼ばないと label が反映されない
@@ -82,12 +86,12 @@ const common = () => {
 		Hack.world.addChild(scoreEffect);
 
 		// スコアの上限は 1000
-		if (Hack.score >= window.MAX_SCORE) {
+		if (newValue >= window.MAX_SCORE) {
 			Hack.score = window.MAX_SCORE;
 			Hack.gameclearPerfect();
 		}
 		// スコアを描画
-		inspect({ score: Hack.score });
+		inspect({ score: newValue });
 	});
 
 	// 魔道書に構文エラーがあったとき
@@ -125,7 +129,7 @@ Hack.startTimer = () => {
 	limitTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
 	limitTimer.on('enterframe', () => {
 		if (Hack.isPlaying) {
-			const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
+			const last = (Math.max(0, limit - Date.now()) / 1000) >> 0;
 			limitTimer.text = 'TIME:' + last;
 			if (last <= 0) {
 				// クリア（これ以降はスコアが増えない）
@@ -136,7 +140,6 @@ Hack.startTimer = () => {
 	});
 	Hack.menuGroup.addChild(limitTimer);
 };
-
 
 // 必要なエイリアスを書き出す
 addSnippet(...snippets);
