@@ -4,7 +4,8 @@ import * as sequence from 'sequence';
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
  */
-var slotScore = 50;
+var slotScore = 40;
+var mCoinScore = 1;
 var coinArray = new Array();
 var trapArray = new Array();
 var trapFlag = false;
@@ -16,7 +17,7 @@ var slotAnswer1 = 0;
 var slotAnswer2 = 0;
 
 var stairsX = 13;
-var stairsY = 5;
+var stairsY = 8;
 
 var kanban1X = 2;
 var kanban1Y = 4;
@@ -143,10 +144,10 @@ function resetMap() {
 		111|121|121|121|121|121|121|121|121|121|121|121|121|121|111|
 		111|121|121|121|121|121|121|121|121|121|121|121|121|121|111|
 		111|120|122|120|120|120|122|120|120|120|120|120|120|120|111|
+		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
+		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
+		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
 		111|110 110 110 110 110 110 110 110 110 110 110 110 100 111|
-		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
-		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
-		111|110 110 110 110 110 110 110 110 110 110 110 110 110 111|
 		102|101|101|101|101|101|101|101|101|101|101|101|101|101|102|
 	`);
 	Hack.maps.map1 = map1;
@@ -161,6 +162,10 @@ function resetMap() {
 	putSlot1(kanban1X+1, kanban1Y);
 	putSlot2(kanban2X+1, kanban2Y);
 	putInput(inputX, kanban1Y);
+
+	putCoin(13, 5);
+	putCoin(13, 6);
+	putCoin(13, 7);
 }
 
 function putKanban(x, y) {
@@ -246,6 +251,16 @@ function putSlot2(x, y) {
 		itemSlot2.frame = slotNumber2;
 		checkAnswer();
 	});
+}
+
+function putCoin(x, y) {
+	const itemCoin1 = new RPGObject();
+	itemCoin1.mod(('▼ スキン', _kコイン));
+	itemCoin1.locate(x, y, 'map1');
+	itemCoin1.onplayerenter = () => {
+		itemCoin1.destroy();
+		Hack.score += mCoinScore;
+	};
 }
 
 function checkAnswer() {
