@@ -4,7 +4,7 @@ import * as sequence from 'sequence';
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
  */
-var moguraScore = 20;
+var moguraScore = 10;
 var coinArray = new Array();
 var trapArray = new Array();
 var trapFlag = false;
@@ -122,7 +122,7 @@ function resetMap() {
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
 		92|90 90 93 90 93 90 93 90 93 90 93 90 90 92|
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
-		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
+		92|90 90 90 93 90 93 90 93 90 93 90 90 90 92|
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
@@ -134,18 +134,20 @@ function resetMap() {
 
 	putRock(4,3);
 	putRock(6,6);
-	// putRock(8,3);
+	putRock(8,3);
 	putRock(9,2);
+	putRock(5,5);
 	putRock(11,5);
 	putRock(12,7);
 	putRock(2,5);
 	putRock(3,7);
 
-	putNumber(3,3, '1');
-	putNumber(5,3, '2');
-	putNumber(7,3, '3');
-	putNumber(9,3, '4');
-	putNumber(11,3, '5');
+	let i = 1;
+	for (const xy of order) {
+		const [x, y] = xy;
+		putNumber(x, y, i + '');
+		i++;
+	}
 
 }
 
@@ -153,6 +155,19 @@ var timerCount = 0;
 var itemMogura;
 var moguraX = 1;
 var moguraY = 0;
+
+let index = -1;
+const order = [
+	[3, 3],
+	[5, 3],
+	[7, 3],
+	[9, 3],
+	[11, 3],
+	[4, 5],
+	[6, 5],
+	[8, 5],
+	[10, 5]
+];
 
 function putNumber(x, y, num) {
 	const label1 = new enchant.ui.MutableText(x*32+8, y*32+16);
@@ -162,11 +177,17 @@ function putNumber(x, y, num) {
 
 
 function timerFunc() {
-	moguraX+=2;
-	if (moguraX>11) {
-		moguraX = 3;
-	} 
-	moguraY = 3;
+	index = (index + 1) % order.length;
+
+	const [x, y] = order[index];
+	moguraX = x;
+	moguraY = y;
+
+	// moguraX+=2;
+	// if (moguraX>11) {
+	// 	moguraX = 3;
+	// } 
+	// moguraY = 3;
 	moguraOn(moguraX, moguraY);
 }
 
