@@ -68,5 +68,10 @@ if (check() === 1) {
 	
 }
 `
+	},
+	/* 変数 */
+	{
+		prefix: 'var',
+		text: 'var チェック = check()'
 	}
 ];
