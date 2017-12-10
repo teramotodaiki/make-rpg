@@ -86,7 +86,7 @@ const common = () => {
 	Hack.on('realtimescorechange', ({ oldValue, newValue }) => {
 		// スコアが増えたときに出る数字
 		const scoreEffect = new enchant.ui.ScoreLabel();
-		scoreEffect.score = newValue - oldValue; // 取得したスコア
+		scoreEffect.score = newValue - (oldValue || 0); // 取得したスコア
 		Object.defineProperty(scoreEffect, 'easing', { value: 0, writable: false });
 		scoreEffect.label = '';
 		scoreEffect.moveTo(
