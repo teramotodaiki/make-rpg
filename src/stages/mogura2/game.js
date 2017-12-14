@@ -10,6 +10,7 @@ var trapArray = new Array();
 var trapFlag = false;
 var startPlayerX = 1;
 var startPlayerY = 2;
+let timeoutIndex = null;
 
 async function gameFunc() {
 	resetMap();
@@ -41,7 +42,7 @@ async function gameFunc() {
 
 	// せつめい
 	const description = new enchant.Sprite(388, 224);
-	description.image = game.assets['resources/start_message_01'];
+	description.image = game.assets['resources/grand_1'];
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
@@ -109,8 +110,9 @@ async function gameFunc() {
 			Hack.overlayGroup.addChild(nextButton);		
 		}, 4000);
 	});
-
-	feeles.setTimeout(timerFunc, 1000);
+	
+	feeles.clearTimeout(timeoutIndex);
+	timeoutIndex = feeles.setTimeout(timerFunc, 1000);
 	feeles.setAlias('check', check, 'check()');
 
 }
@@ -153,8 +155,6 @@ function resetMap() {
 
 var timerCount = 0;
 var itemMogura;
-var moguraX = 1;
-var moguraY = 0;
 
 let index = -1;
 const order = [
@@ -169,6 +169,9 @@ const order = [
 	[10, 5]
 ];
 
+var moguraX = order[0][0];
+var moguraY = order[0][1];
+
 function putNumber(x, y, num) {
 	const label1 = new enchant.ui.MutableText(x*32+8, y*32+16);
 	label1.text = num;
@@ -178,7 +181,7 @@ function putNumber(x, y, num) {
 
 function timerFunc() {
 	index = (index + 1) % order.length;
-
+	
 	const [x, y] = order[index];
 	moguraX = x;
 	moguraY = y;
@@ -201,7 +204,8 @@ function moguraOn(x, y) {
 	itemMogura.onこうげきされた = () => {
 		itemMogura.destroy();
 		Hack.score += moguraScore;
-		feeles.setTimeout(timerFunc, 1000);
+		feeles.clearTimeout(timeoutIndex);
+		timeoutIndex = feeles.setTimeout(timerFunc, 1000);
 	};
 }
 
@@ -257,9 +261,11 @@ Hack.onreset = function() {
 	player.forward = [1, 0];
 
 	itemMogura.destroy();
-	moguraX = 1;
-	moguraY = 0;
-	feeles.setTimeout(timerFunc, 1000);
+	moguraX = order[0][0];
+	moguraY = order[0][1];
+	index = -1;
+	feeles.clearTimeout(timeoutIndex);
+	timeoutIndex = feeles.setTimeout(timerFunc, 1000);
 };
 
 export default gameFunc;

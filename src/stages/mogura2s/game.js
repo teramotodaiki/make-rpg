@@ -4,13 +4,13 @@ import * as sequence from 'sequence';
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
  */
-var moguraScore = 20;
+var moguraScore = 10;
 var coinArray = new Array();
 var trapArray = new Array();
 var trapFlag = false;
 var startPlayerX = 1;
 var startPlayerY = 2;
-var moguraRandomArray = [3, 2, 4, 1, 0, 4, 2, 3, 0, 1, 4, 2];
+let timeoutIndex = null;
 
 async function gameFunc() {
 	resetMap();
@@ -45,45 +45,23 @@ async function gameFunc() {
 
 	// せつめい
 	const description = new enchant.Sprite(388, 224);
-	description.image = game.assets['resources/start_message_01'];
+	description.image = game.assets['resources/grand_1'];
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
-	// const startButton = new enchant.Sprite(120, 32);
-	// startButton.image = game.assets['resources/start_button'];
-	// startButton.moveTo(180, 220);
-	// Hack.menuGroup.addChild(startButton);
-	// startButton.ontouchstart = () => {
-	// 	Hack.menuGroup.removeChild(description);
-	// 	Hack.menuGroup.removeChild(startButton);
-	// 	// タイマー開始
-	// 	Hack.startTimer();
+	const startButton = new enchant.Sprite(120, 32);
+	startButton.image = game.assets['resources/start_button'];
+	startButton.moveTo(180, 220);
+	Hack.menuGroup.addChild(startButton);
+	startButton.ontouchstart = () => {
+		Hack.menuGroup.removeChild(description);
+		Hack.menuGroup.removeChild(startButton);
+		// タイマー開始
+		Hack.startTimer();
 
-	// 	// 魔道書のコードをひらく
-	// 	feeles.openCode('stages/mogura/code.js');
-	// };
-
-	// 説明画面（作戦タイム）のタイマー => ゲームスタート
-	const strategyTimer = new enchant.ui.MutableText(352, 8);
-	const limit = Date.now() + window.STRATEGY_TIME;
-	strategyTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-	strategyTimer.on('enterframe', () => {
-		const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
-		strategyTimer.text = 'TIME:' + last;
-		if (last <= 0) {
-			Hack.menuGroup.removeChild(description);
-			// Hack.menuGroup.removeChild(startButton);
-			// タイマー開始
-			Hack.startTimer();
-		
-			// 魔道書のコードをひらく
-			feeles.openCode('stages/mogura2s/code.js');
-			
-			// 削除
-			Hack.menuGroup.removeChild(strategyTimer);
-		}
-	});
-	Hack.menuGroup.addChild(strategyTimer);
+		// 魔道書のコードをひらく
+		feeles.openCode('stages/mogura2s/code.js');
+	};
 
 	feeles.closeCode();
 	feeles.closeReadme();
@@ -99,22 +77,10 @@ async function gameFunc() {
 			Hack.overlayGroup.addChild(Hack.scoreLabel);
 			Hack.scoreLabel.score = score;
 		}, 1000);
-
-		// 次へボタン
-		const nextButton = new enchant.Sprite(120, 32);
-		nextButton.image = game.assets['resources/next_button'];
-		nextButton.moveTo(180, 260);
-		nextButton.ontouchstart = () => {
-			// stage 1.5 へ
-			feeles.replace('stages/1/index.html');
-		};
-
-		setTimeout(() => {		
-			Hack.overlayGroup.addChild(nextButton);		
-		}, 4000);
 	});
 
-	feeles.setTimeout(timerFunc, 1000);
+	feeles.clearTimeout(timeoutIndex);
+	timeoutIndex = feeles.setTimeout(timerFunc, 1000);
 	feeles.setAlias('check', check, 'check()');
 
 }
@@ -126,7 +92,7 @@ function resetMap() {
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
 		92|90 90 93 90 93 90 93 90 93 90 93 90 90 92|
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
-		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
+		92|90 90 90 93 90 93 90 93 90 93 90 90 90 92|
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
 		92|90 90 90 90 90 90 90 90 90 90 90 90 90 92|
@@ -138,29 +104,70 @@ function resetMap() {
 
 	putRock(4,3);
 	putRock(6,6);
-	putRock(6,7);
 	putRock(8,3);
 	putRock(9,2);
-	putRock(10,7);
+	putRock(5,5);
 	putRock(11,5);
 	putRock(12,7);
 	putRock(2,5);
-	putRock(6,1);
 	putRock(3,7);
+
+	let i = 1;
+	for (const xy of order) {
+		const [x, y] = xy;
+		putNumber(x, y, i + '');
+		i++;
+	}
 
 }
 
 var timerCount = 0;
 var itemMogura;
-var moguraX = 1;
-var moguraY = 0;
-var moguraCount = 0;
+
+let index = -1;
+const order = [
+	[5, 3],
+	[11, 3],
+	[4, 5],
+	[3, 3],
+	[5, 3],
+	[10, 5],
+	[8, 5],
+	[6, 5],
+	[10, 5],
+	[7, 3],
+	[11, 3],
+	[7, 3],
+	[3, 3],
+	[9, 3],
+	[6, 5],
+	[9, 3],
+	[8, 5],
+	[4, 5]
+];
+
+var moguraX = order[0][0];
+var moguraY = order[0][1];
+
+function putNumber(x, y, num) {
+	const label1 = new enchant.ui.MutableText(x*32+8, y*32+16);
+	label1.text = '?';
+	Hack.menuGroup.addChild(label1);
+}
+
 
 function timerFunc() {
+	index = (index + 1) % order.length;
 
- 	moguraX = moguraRandomArray[moguraCount % moguraRandomArray.length] *2 + 3;
-	moguraCount++;
-	moguraY = 3;
+	const [x, y] = order[index];
+	moguraX = x;
+	moguraY = y;
+
+	// moguraX+=2;
+	// if (moguraX>11) {
+	// 	moguraX = 3;
+	// } 
+	// moguraY = 3;
 	moguraOn(moguraX, moguraY);
 }
 
@@ -174,7 +181,8 @@ function moguraOn(x, y) {
 	itemMogura.onこうげきされた = () => {
 		itemMogura.destroy();
 		Hack.score += moguraScore;
-		feeles.setTimeout(timerFunc, 1000);
+		feeles.clearTimeout(timeoutIndex);
+		timeoutIndex = feeles.setTimeout(timerFunc, 1000);
 	};
 }
 
@@ -228,11 +236,13 @@ Hack.onreset = function() {
 	resetMap();
 	player.locate(startPlayerX, startPlayerY); // はじめの位置
 	player.forward = [1, 0];
-	moguraCount = 0;
+
 	itemMogura.destroy();
-	moguraX = 1;
-	moguraY = 0;
-	feeles.setTimeout(timerFunc, 1000);
+	moguraX = order[0][0];
+	moguraY = order[0][1];
+	index = -1;
+	feeles.clearTimeout(timeoutIndex);
+	timeoutIndex = feeles.setTimeout(timerFunc, 1000);
 };
 
 export default gameFunc;

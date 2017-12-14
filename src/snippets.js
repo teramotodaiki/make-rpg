@@ -53,8 +53,8 @@ for (let かず = 0; かず < 10; かず++) {
 	{
 		prefix: 'while',
 		text: `
-// check が 0 の間ずっとくりかえす
-while (check() === 0) {
+// check が 1 の間ずっとくりかえす
+while (check() === 1) {
 
 }
 `

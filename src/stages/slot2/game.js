@@ -63,7 +63,7 @@ async function gameFunc() {
 
 	// せつめい
 	const description = new enchant.Sprite(388, 224);
-	description.image = game.assets['resources/start_message_01'];
+	description.image = game.assets['resources/grand_2'];
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
