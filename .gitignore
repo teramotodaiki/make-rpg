@@ -9,3 +9,6 @@ public
 
 # firebase
 firebase-debug.log
+
+# parcel
+.cache
