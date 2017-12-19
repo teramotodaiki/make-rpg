@@ -77,12 +77,11 @@ function run(code) {
 	// /(attack|dash|...)\(/g
 	const regExp = new RegExp(`(${asyncMethodKeywords.join('|')})\\(`,  'g');
 
-	try {
-		// 全体を async function で囲み,
-		// const methodNames の変数宣言を差し込み,
-		// workerJs とがっちゃんこして,
-		// 最後に await キーワードを補完
-		code = `
+	// 全体を async function で囲み,
+	// const methodNames の変数宣言を差し込み,
+	// workerJs とがっちゃんこして,
+	// 最後に await キーワードを補完
+	code = `
 const methodNames = [
 	${asyncMethodKeywords.map(name => `'${name}'`).join(',')}
 ];
@@ -91,54 +90,49 @@ ${workerJs}
 	${code.replace(regExp, 'await $1(')}
 })()`;
 
-		// code (javascript) が取得できる URL
-		const url = URL.createObjectURL(
-			new Blob([code], { type: 'text/javascript' })
-		);
+	// code (javascript) が取得できる URL
+	const url = URL.createObjectURL(
+		new Blob([code], { type: 'text/javascript' })
+	);
 
 		// 前回の Worker をとじる
-		kill();
+	kill();
 		
-		// 実行開始!
-		worker = new Worker(url);
+	// 実行開始!
+	worker = new Worker(url);
 
-		// Worker から受け取ったリクエストを処理し,
-		// 終わり次第メッセージを返す
-		worker.addEventListener('message', event => {
-			const { id, name, args } = event.data;
-			// Worker 側から指定されたメソッドをコール
-			const method = methods[name];
-			if (!method) {
-				console.info('現在登録されているメソッド:', methods);
-				throw new Error(`メソッド ${name} は登録されていません. feeles.setAlias(name, func); してください`);
-			}
-			method(...args).then(returnValue => {
-				// ワーカーにメッセージ（戻り値）を送る
-				event.target.postMessage({
-					id,
-					returnValue
-				});
-				// Hack.onsendworker を発火
-				const sendworkerEvent = new Event('sendworker');
-				sendworkerEvent.method = method;
-				sendworkerEvent.returnValue = returnValue;
-				Hack.dispatchEvent(sendworkerEvent);
+	// Worker から受け取ったリクエストを処理し,
+	// 終わり次第メッセージを返す
+	worker.addEventListener('message', event => {
+		const { id, name, args } = event.data;
+		// Worker 側から指定されたメソッドをコール
+		const method = methods[name];
+		if (!method) {
+			console.info('現在登録されているメソッド:', methods);
+			throw new Error(`メソッド ${name} は登録されていません. feeles.setAlias(name, func); してください`);
+		}
+		method(...args).then(returnValue => {
+			// ワーカーにメッセージ（戻り値）を送る
+			event.target.postMessage({
+				id,
+				returnValue
 			});
+			// Hack.onsendworker を発火
+			const sendworkerEvent = new Event('sendworker');
+			sendworkerEvent.method = method;
+			sendworkerEvent.returnValue = returnValue;
+			Hack.dispatchEvent(sendworkerEvent);
 		});
+	});
 
-		worker.addEventListener('error', error => {
-			// もう一度メインスレッドで例外を投げる
-			throw error;
-		});
-
-	} catch (error) {
+	worker.addEventListener('error', error => {
 		// Hack.onerror を発火
 		const Event = enchant.Event;
 		const errorEvent = new Event('error');
 		errorEvent.target = Hack;
 		errorEvent.error = error;
 		Hack.dispatchEvent(errorEvent);
-	}
+	});
 }
 
 // 現在実行中のプロセス（Workerをkill）
