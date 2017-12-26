@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FeelesWebpackPlugin = require('./feeles-webpack-plugin');
 const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 
-const cdn = 'https://assets.feeles.com/public/v1137/h4p.js';
+const cdn = 'https://assets.feeles.com/public/v1146/h4p.js';
 // const cdn = 'http://localhost:8081/h4p.js';
 const port = process.env.PORT || 8082;
 const dist = 'public/';
@@ -16,10 +16,12 @@ module.exports = {
 		filename: '[name].js'
 	},
 	module: {
-		loaders: [{
-			test: /\.(html|hbs)$/,
-			loaders: ['handlebars-loader']
-		}]
+		loaders: [
+			{
+				test: /\.(html|hbs)$/,
+				loaders: ['handlebars-loader']
+			}
+		]
 	},
 	plugins: [
 		new HtmlWebpackPlugin({
