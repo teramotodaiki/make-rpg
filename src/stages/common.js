@@ -8,6 +8,7 @@ import 'mod/coordinate';
 import snippets from 'snippets';
 import addSnippet from 'addSnippet';
 import inspect, { getState } from './inspect';
+import { updateLastTime } from 'ranking';
 
 
 window.STRATEGY_TIME = 60 * 1000; // 説明画面でとまる秒数. 実際には１分とか.
@@ -144,13 +145,15 @@ Hack.startTimer = () => {
 	limitTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
 	limitTimer.on('enterframe', () => {
 		if (Hack.isPlaying) {
-			const last = (Math.max(0, limit - Date.now()) / 1000) >> 0;
-			limitTimer.text = 'TIME:' + last;
+			const last = Math.max(0, limit - Date.now());
+			limitTimer.text = 'TIME:' + Math.floor(last / 1000);
 			if (last <= 0) {
 				// クリア（これ以降はスコアが増えない）
 				Hack.gameclear();
 			}
-			inspect({ last });
+			inspect({ last: Math.floor(last / 1000) });
+			// ランキング送信用の残り時間更新
+			updateLastTime(last);
 		}
 	});
 	Hack.menuGroup.addChild(limitTimer);
