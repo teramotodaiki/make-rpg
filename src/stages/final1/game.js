@@ -1,5 +1,8 @@
 import 'hackforplay/core';
 import * as sequence from 'sequence';
+import ranking from 'ranking';
+
+const STAGE = 'stages/final1';
 
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
@@ -41,41 +44,41 @@ async function gameFunc() {
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
-	// const startButton = new enchant.Sprite(120, 32);
-	// startButton.image = game.assets['resources/start_button'];
-	// startButton.moveTo(180, 220);
-	// Hack.menuGroup.addChild(startButton);
-	// startButton.ontouchstart = () => {
-	// 	Hack.menuGroup.removeChild(description);
-	// 	Hack.menuGroup.removeChild(startButton);
-	// 	// タイマー開始
-	// 	Hack.startTimer();
+	const startButton = new enchant.Sprite(120, 32);
+	startButton.image = game.assets['resources/start_button'];
+	startButton.moveTo(180, 220);
+	Hack.menuGroup.addChild(startButton);
+	startButton.ontouchstart = () => {
+		Hack.menuGroup.removeChild(description);
+		Hack.menuGroup.removeChild(startButton);
+		// タイマー開始
+		Hack.startTimer();
 
-	// 	// 魔道書のコードをひらく
-	// 	feeles.openCode('stages/1/code.js');
-	// };
+		// 魔道書のコードをひらく
+		feeles.openCode('stages/final1/code.js');
+	};
 
-	// 説明画面（作戦タイム）のタイマー => ゲームスタート
-	const strategyTimer = new enchant.ui.MutableText(352, 8);
-	const limit = Date.now() + window.STRATEGY_TIME;
-	strategyTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-	strategyTimer.on('enterframe', () => {
-		const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
-		strategyTimer.text = 'TIME:' + last;
-		if (last <= 0) {
-			Hack.menuGroup.removeChild(description);
-			// Hack.menuGroup.removeChild(startButton);
-			// タイマー開始
-			Hack.startTimer();
+	// // 説明画面（作戦タイム）のタイマー => ゲームスタート
+	// const strategyTimer = new enchant.ui.MutableText(352, 8);
+	// const limit = Date.now() + window.STRATEGY_TIME;
+	// strategyTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	// strategyTimer.on('enterframe', () => {
+	// 	const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
+	// 	strategyTimer.text = 'TIME:' + last;
+	// 	if (last <= 0) {
+	// 		Hack.menuGroup.removeChild(description);
+	// 		// Hack.menuGroup.removeChild(startButton);
+	// 		// タイマー開始
+	// 		Hack.startTimer();
 		
-			// 魔道書のコードをひらく
-			feeles.openCode('stages/final1/code.js');
+	// 		// 魔道書のコードをひらく
+	// 		feeles.openCode('stages/final1/code.js');
 			
-			// 削除
-			Hack.menuGroup.removeChild(strategyTimer);
-		}
-	});
-	Hack.menuGroup.addChild(strategyTimer);
+	// 		// 削除
+	// 		Hack.menuGroup.removeChild(strategyTimer);
+	// 	}
+	// });
+	// Hack.menuGroup.addChild(strategyTimer);
 
 	feeles.closeCode();
 	feeles.closeReadme();
@@ -90,6 +93,11 @@ async function gameFunc() {
 			Hack.scoreLabel.moveBy(0, 210);
 			Hack.overlayGroup.addChild(Hack.scoreLabel);
 			Hack.scoreLabel.score = score;
+			// ランキング登録
+			ranking(STAGE).then(() => {
+				// 次のステージへのボタン
+				Hack.overlayGroup.addChild(nextButton);
+			});
 		}, 1000);
 
 		// 次へボタン
@@ -100,10 +108,6 @@ async function gameFunc() {
 			// stage final2 へ
 			feeles.replace('stages/final2/index.html');
 		};
-
-		setTimeout(() => {		
-			Hack.overlayGroup.addChild(nextButton);		
-		}, 4000);
 	});
 
 }

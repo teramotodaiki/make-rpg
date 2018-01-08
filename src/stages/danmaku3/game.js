@@ -1,5 +1,8 @@
 import 'hackforplay/core';
 import * as sequence from 'sequence';
+import ranking from 'ranking';
+
+const STAGE = 'stages/grand3';
 
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
@@ -63,27 +66,41 @@ async function gameFunc() {
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
-	// 説明画面（作戦タイム）のタイマー => ゲームスタート
-	const strategyTimer = new enchant.ui.MutableText(352, 8);
-	const limit = Date.now() + window.STRATEGY_TIME;
-	strategyTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-	strategyTimer.on('enterframe', () => {
-		const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
-		strategyTimer.text = 'TIME:' + last;
-		if (last <= 0) {
-			Hack.menuGroup.removeChild(description);
-			// Hack.menuGroup.removeChild(startButton);
-			// タイマー開始
-			Hack.startTimer();
+	const startButton = new enchant.Sprite(120, 32);
+	startButton.image = game.assets['resources/start_button'];
+	startButton.moveTo(180, 220);
+	Hack.menuGroup.addChild(startButton);
+	startButton.ontouchstart = () => {
+		Hack.menuGroup.removeChild(description);
+		Hack.menuGroup.removeChild(startButton);
+		// タイマー開始
+		Hack.startTimer();
+
+		// 魔道書のコードをひらく
+		feeles.openCode('stages/danmaku3/code.js');
+	};
+
+	// // 説明画面（作戦タイム）のタイマー => ゲームスタート
+	// const strategyTimer = new enchant.ui.MutableText(352, 8);
+	// const limit = Date.now() + window.STRATEGY_TIME;
+	// strategyTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	// strategyTimer.on('enterframe', () => {
+	// 	const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
+	// 	strategyTimer.text = 'TIME:' + last;
+	// 	if (last <= 0) {
+	// 		Hack.menuGroup.removeChild(description);
+	// 		// Hack.menuGroup.removeChild(startButton);
+	// 		// タイマー開始
+	// 		Hack.startTimer();
 		
-			// 魔道書のコードをひらく
-			feeles.openCode('stages/danmaku3/code.js');
+	// 		// 魔道書のコードをひらく
+	// 		feeles.openCode('stages/danmaku3/code.js');
 			
-			// 削除
-			Hack.menuGroup.removeChild(strategyTimer);
-		}
-	});
-	Hack.menuGroup.addChild(strategyTimer);
+	// 		// 削除
+	// 		Hack.menuGroup.removeChild(strategyTimer);
+	// 	}
+	// });
+	// Hack.menuGroup.addChild(strategyTimer);
 
 	feeles.closeCode();
 	feeles.closeReadme();
@@ -98,6 +115,8 @@ async function gameFunc() {
 			Hack.scoreLabel.moveBy(0, 210);
 			Hack.overlayGroup.addChild(Hack.scoreLabel);
 			Hack.scoreLabel.score = score;
+			// ランキング登録
+			ranking(STAGE);
 		}, 1000);
 	});
 
@@ -126,7 +145,7 @@ async function check() {
 		// for (var i=0; i<trapArray.length; i++) {
 		for(var i=0; i<trapArray.length; i++) {
 			var obj = trapArray[i];
-			console.log('check array:' + i +', x:' + obj.mapX+', y:' + obj.mapY + 'targetX:'+targetX+',y:'+targetY) ;
+			// console.log('check array:' + i +', x:' + obj.mapX+', y:' + obj.mapY + 'targetX:'+targetX+',y:'+targetY) ;
 			if (obj.mapX == targetX && obj.mapY == targetY) {
 				return 1;
 			}
@@ -207,7 +226,7 @@ function setTraps(pattern) {
 							var coinX = coinArray[l].mapX;
 							var coinY = coinArray[l].mapY;
 							if (coinX == k && coinY == (i+k)) {
-								console.log('coin重なった' + coinX+','+coinY);
+								// console.log('coin重なった' + coinX+','+coinY);
 								coinArray0.push(coinArray[l]);
 								coinArray[l].mod(('▼ スキン', _wわなかかった));
 

@@ -1,5 +1,8 @@
 import 'hackforplay/core';
 import * as sequence from 'sequence';
+import ranking from 'ranking';
+
+const STAGE = 'stages/final3';
 
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
@@ -42,6 +45,20 @@ async function gameFunc() {
 	description.moveTo(46, 48);
 	Hack.menuGroup.addChild(description);
 
+	const startButton = new enchant.Sprite(120, 32);
+	startButton.image = game.assets['resources/start_button'];
+	startButton.moveTo(180, 220);
+	Hack.menuGroup.addChild(startButton);
+	startButton.ontouchstart = () => {
+		Hack.menuGroup.removeChild(description);
+		Hack.menuGroup.removeChild(startButton);
+		// タイマー開始
+		Hack.startTimer();
+
+		// 魔道書のコードをひらく
+		feeles.openCode('stages/final3/code.js');
+	};
+
 	// 説明画面（作戦タイム）のタイマー => ゲームスタート
 	const strategyTimer = new enchant.ui.MutableText(352, 8);
 	const limit = Date.now() + window.STRATEGY_TIME;
@@ -77,6 +94,8 @@ async function gameFunc() {
 			Hack.scoreLabel.moveBy(0, 210);
 			Hack.overlayGroup.addChild(Hack.scoreLabel);
 			Hack.scoreLabel.score = score;
+			// ランキング登録
+			ranking(STAGE);
 		}, 1000);
 	});
 
