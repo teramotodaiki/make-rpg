@@ -59,27 +59,27 @@ async function gameFunc() {
 		feeles.openCode('stages/final3/code.js');
 	};
 
-	// 説明画面（作戦タイム）のタイマー => ゲームスタート
-	const strategyTimer = new enchant.ui.MutableText(352, 8);
-	const limit = Date.now() + window.STRATEGY_TIME;
-	strategyTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-	strategyTimer.on('enterframe', () => {
-		const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
-		strategyTimer.text = 'TIME:' + last;
-		if (last <= 0) {
-			Hack.menuGroup.removeChild(description);
-			// Hack.menuGroup.removeChild(startButton);
-			// タイマー開始
-			Hack.startTimer();
+	// // 説明画面（作戦タイム）のタイマー => ゲームスタート
+	// const strategyTimer = new enchant.ui.MutableText(352, 8);
+	// const limit = Date.now() + window.STRATEGY_TIME;
+	// strategyTimer.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+	// strategyTimer.on('enterframe', () => {
+	// 	const last = Math.max(0, limit - Date.now()) / 1000 >> 0;
+	// 	strategyTimer.text = 'TIME:' + last;
+	// 	if (last <= 0) {
+	// 		Hack.menuGroup.removeChild(description);
+	// 		// Hack.menuGroup.removeChild(startButton);
+	// 		// タイマー開始
+	// 		Hack.startTimer();
 		
-			// 魔道書のコードをひらく
-			feeles.openCode('stages/final3/code.js');
+	// 		// 魔道書のコードをひらく
+	// 		feeles.openCode('stages/final3/code.js');
 			
-			// 削除
-			Hack.menuGroup.removeChild(strategyTimer);
-		}
-	});
-	Hack.menuGroup.addChild(strategyTimer);
+	// 		// 削除
+	// 		Hack.menuGroup.removeChild(strategyTimer);
+	// 	}
+	// });
+	// Hack.menuGroup.addChild(strategyTimer);
 
 	feeles.closeCode();
 	feeles.closeReadme();
