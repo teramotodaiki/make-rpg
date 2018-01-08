@@ -95,8 +95,20 @@ async function gameFunc() {
 			Hack.overlayGroup.addChild(Hack.scoreLabel);
 			Hack.scoreLabel.score = score;
 			// ランキング登録
-			ranking(STAGE);
+			ranking(STAGE).then(() => {
+				// 次のステージへのボタン
+				Hack.overlayGroup.addChild(nextButton);
+			});
 		}, 1000);
+
+		// 次へボタン
+		const nextButton = new enchant.Sprite(120, 32);
+		nextButton.image = game.assets['resources/next_button'];
+		nextButton.moveTo(180, 260);
+		nextButton.ontouchstart = () => {
+			// champion トップへ
+			feeles.replace('stages/champion/index.html');
+		};
 	});
 
 }
