@@ -3,7 +3,7 @@ import * as sequence from 'sequence';
 import map from './map';
 import ranking from 'ranking';
 
-const STAGE = 'stages/semi2';
+const STAGE = 'semi2';
 
 /* ここの部分は選手には見えません
  * デバッグ中につき魔道書は最初から表示されています
